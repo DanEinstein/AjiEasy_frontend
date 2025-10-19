@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AjiEasy - Interview Preparation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #1a1a2e;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #0f3460;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            padding: 0.7rem 1.5rem;
+            border: 2px solid white;
+            background-color: transparent;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: white;
+            color: #0f3460;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+            min-height: 500px;
+        }
+
+        /* Left Column - Control Panel */
+        .control-panel {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-panel h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f3460;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-panel form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #0f3460;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #16c79a;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(22, 199, 154, 0.1);
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 1rem;
+            background-color: #16c79a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-generate:hover:not(:disabled) {
+            background-color: #13a77e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(22, 199, 154, 0.3);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .btn-generate:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Info Box */
+        .info-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #0f3460, #16c79a);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .info-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* Right Column - Display Panel */
+        .display-panel {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Initial State */
+        .initial-state {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .initial-state .icon {
+            font-size: 5rem;
+            color: #16c79a;
+            margin-bottom: 1rem;
+        }
+
+        .initial-state h3 {
+            font-size: 2rem;
+            color: #0f3460;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .initial-state p {
+            font-size: 1.1rem;
+            color: #777;
+        }
+
+        /* Loading State */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #16c79a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-state p {
+            font-size: 1.1rem;
+            color: #0f3460;
+            font-weight: 600;
+        }
+
+        /* Results State */
+        .results-state {
+            width: 100%;
+            display: none;
+        }
+
+        .results-state.active {
+            display: block;
+        }
+
+        .results-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .results-header h3 {
+            font-size: 1.8rem;
+            color: #0f3460;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-header .topic-badge {
+            display: inline-block;
+            background-color: #16c79a;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .results-content {
+            line-height: 1.8;
+        }
+
+        .results-content ol {
+            counter-reset: item;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .results-content ol li {
+            counter-increment: item;
+            margin-bottom: 1.5rem;
+            padding-left: 3rem;
+            position: relative;
+            font-size: 1.05rem;
+        }
+
+        .results-content ol li::before {
+            content: counter(item);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #16c79a;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .results-content strong {
+            color: #0f3460;
+            font-weight: 600;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #0f3460;
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #16c79a;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .control-panel {
+                order: 1;
+            }
+
+            .display-panel {
+                order: 2;
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .brand {
+                font-size: 1.5rem;
+            }
+
+            .btn-logout {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .control-panel,
+            .display-panel {
+                padding: 1.5rem;
+            }
+
+            .control-panel h2 {
+                font-size: 1.5rem;
+            }
+
+            .initial-state .icon {
+                font-size: 4rem;
+            }
+
+            .initial-state h3 {
+                font-size: 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-content ol li {
+                padding-left: 2.5rem;
+                font-size: 0.95rem;
+            }
+
+            .results-content ol li::before {
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="brand">AjiEasy</a>
+        <button class="btn-logout" id="logoutBtn">Log Out</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="app-container">
+            <!-- Left Column - Control Panel -->
+            <div class="control-panel">
+                <h2>Prepare for Your Interview</h2>
+                <form id="topicForm">
+                    <div class="input-group">
+                        <label for="topic">Interview Topic</label>
+                        <input type="text" id="topic" name="topic"
+                            placeholder="Enter a topic (e.g., Python, Project Management)" required>
+                    </div>
+                    <button type="submit" class="btn-generate" id="generateBtn">
+                        Generate Questions
+                    </button>
+                </form>
+
+                <div class="info-box">
+                    <h3>💡 Pro Tip</h3>
+                    <p>Be specific with your topic for better results. Instead of "programming," try "Python data
+                        structures" or "React hooks interview questions."</p>
+                </div>
+            </div>
+
+            <!-- Right Column - Display Panel -->
+            <div class="display-panel" id="displayPanel">
+                <!-- Initial State -->
+                <div class="initial-state" id="initialState">
+                    <div class="icon">🎯</div>
+                    <h3>Ready to Practice?</h3>
+                    <p>Enter a topic on the left to get started.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state hidden" id="loadingState">
+                    <div class="spinner"></div>
+                    <p>Generating your questions...</p>
+                </div>
+
+                <!-- Results State -->
+                <div class="results-state" id="resultsState">
+                    <div class="results-header">
+                        <h3>Interview Questions</h3>
+                        <span class="topic-badge" id="topicBadge"></span>
+                    </div>
+                    <div class="results-content" id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>&copy; 2025 AjiEasy</div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load authentication module -->
+    <script src="auth.js"></script>
+
+    <!-- App page specific logic -->
+    <script>
+        // SECURITY: Check authentication immediately
+        checkAuth();
+
+        // Get references to DOM elements
+        const topicForm = document.getElementById('topicForm');
+        const topicInput = document.getElementById('topic');
+        const generateBtn = document.getElementById('generateBtn');
+        const displayPanel = document.getElementById('displayPanel');
+        const initialState = document.getElementById('initialState');
+        const loadingState = document.getElementById('loadingState');
+        const resultsState = document.getElementById('resultsState');
+        const topicBadge = document.getElementById('topicBadge');
+        const resultsContent = document.getElementById('resultsContent');
+
+        // Get logout button and add event listener
+        const logoutButton = document.getElementById('logoutBtn');
+        logoutButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            logoutUser();
+        });
+
+        // Optional: Display user's name in the navbar or app
+        const userName = getUserName();
+        if (userName) {
+            console.log('Welcome,', userName);
+            // You could also display it in the UI if desired
+        }
+
+        // Handle form submission
+        topicForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const topic = topicInput.value.trim();
+
+            if (!topic) {
+                alert('Please enter a topic');
+                return;
+            }
+
+            // Show loading state
+            initialState.classList.add('hidden');
+            resultsState.classList.remove('active');
+            loadingState.classList.remove('hidden');
+            generateBtn.disabled = true;
+
+            // TODO: Replace this with actual API call to your backend
+            // Example for when you add a /generate-questions endpoint:
+            /*
+            try {
+                const response = await authenticatedRequest('/generate-questions', {
+                    method: 'POST',
+                    body: JSON.stringify({ topic: topic })
+                });
+                
+                if (response.questions) {
+                    // Update results with real data
+                    topicBadge.textContent = topic;
+                    
+                    let questionsHTML = '<ol>';
+                    response.questions.forEach(function(question) {
+                        questionsHTML += '<li><strong>Question:</strong> ' + question + '</li>';
+                    });
+                    questionsHTML += '</ol>';
+                    
+                    resultsContent.innerHTML = questionsHTML;
+                    loadingState.classList.add('hidden');
+                    resultsState.classList.add('active');
+                    generateBtn.disabled = false;
+                }
+            } catch (error) {
+                loadingState.classList.add('hidden');
+                initialState.classList.remove('hidden');
+                alert('Failed to generate questions: ' + error.message);
+                generateBtn.disabled = false;
+            }
+            */
+
+            // Simulate API call with setTimeout (3 seconds) - FOR TESTING ONLY
+            setTimeout(function () {
+                // Hide loading state
+                loadingState.classList.add('hidden');
+
+                // Update results with sample data
+                topicBadge.textContent = topic;
+
+                // Generate sample questions based on the topic
+                const sampleQuestions = [
+                    `Can you explain the core concepts of ${topic} and how they apply in real-world scenarios?`,
+                    `What are the most common challenges you've faced when working with ${topic}, and how did you overcome them?`,
+                    `Describe a project where you successfully implemented ${topic}. What was your approach?`,
+                    `How do you stay updated with the latest developments and best practices in ${topic}?`,
+                    `Can you compare ${topic} with alternative approaches or technologies? What are the trade-offs?`,
+                    `Walk me through how you would explain ${topic} to someone who has no technical background.`,
+                    `What metrics or KPIs would you use to measure success when implementing ${topic} in a project?`,
+                    `Describe a time when something went wrong while working with ${topic}. How did you debug and resolve the issue?`
+                ];
+
+                // Create ordered list HTML
+                let questionsHTML = '<ol>';
+                sampleQuestions.forEach(function (question) {
+                    questionsHTML += '<li><strong>Question:</strong> ' + question + '</li>';
+                });
+                questionsHTML += '</ol>';
+
+                resultsContent.innerHTML = questionsHTML;
+
+                // Show results state
+                resultsState.classList.add('active');
+                generateBtn.disabled = false;
+            }, 3000);
+        });
+    </script>
+</body>
+
+</html>
