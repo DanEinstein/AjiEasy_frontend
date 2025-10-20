@@ -3,12 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- Clean viewport for responsive design and no zoom restrictions -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AjiEasy - Interview Preparation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Reset and base */
         * {
             margin: 0;
             padding: 0;
@@ -33,6 +35,7 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
 
         .brand {
@@ -64,18 +67,23 @@
         /* Main Content */
         .main-content {
             flex: 1;
+            /* Grow to fill vertical space */
             padding: 2rem;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .app-container {
             display: grid;
             grid-template-columns: 400px 1fr;
             gap: 2rem;
-            height: calc(100vh - 200px);
+            flex: 1;
+            /* fill available height */
             min-height: 500px;
+            height: auto;
         }
 
         /* Left Column - Control Panel */
@@ -119,9 +127,11 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 16px;
             transition: all 0.3s ease;
             background-color: #fafafa;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .input-group input:focus {
@@ -190,8 +200,9 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             overflow-y: auto;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: auto;
         }
 
         /* Initial State */
@@ -202,6 +213,7 @@
             align-items: center;
             justify-content: center;
             color: #666;
+            flex-grow: 1;
         }
 
         .initial-state .icon {
@@ -224,11 +236,16 @@
 
         /* Loading State */
         .loading-state {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .loading-state.active {
+            display: flex;
         }
 
         .spinner {
@@ -260,16 +277,19 @@
         .results-state {
             width: 100%;
             display: none;
+            flex-direction: column;
         }
 
         .results-state.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
         }
 
         .results-header {
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid #e0e0e0;
+            width: 100%;
         }
 
         .results-header h3 {
@@ -291,6 +311,11 @@
 
         .results-content {
             line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding-right: 10px;
+            width: 100%;
         }
 
         .results-content ol {
@@ -305,6 +330,7 @@
             padding-left: 3rem;
             position: relative;
             font-size: 1.05rem;
+            color: #1a1a2e;
         }
 
         .results-content ol li::before {
@@ -329,11 +355,6 @@
             font-weight: 600;
         }
 
-        /* Hidden class */
-        .hidden {
-            display: none !important;
-        }
-
         /* Footer */
         .footer {
             background-color: #0f3460;
@@ -341,6 +362,8 @@
             padding: 1.5rem 2rem;
             text-align: center;
             margin-top: auto;
+            width: 100%;
+            flex-shrink: 0;
         }
 
         .footer-content {
@@ -366,6 +389,11 @@
 
         .footer-links a:hover {
             color: #16c79a;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
         }
 
         /* Responsive Design */
@@ -447,6 +475,7 @@
 </head>
 
 <body>
+
     <!-- Navbar -->
     <nav class="navbar">
         <a href="index.html" class="brand">AjiEasy</a>
@@ -465,9 +494,7 @@
                         <input type="text" id="topic" name="topic"
                             placeholder="Enter a topic (e.g., Python, Project Management)" required>
                     </div>
-                    <button type="submit" class="btn-generate" id="generateBtn">
-                        Generate Questions
-                    </button>
+                    <button type="submit" class="btn-generate" id="generateBtn">Generate Questions</button>
                 </form>
 
                 <div class="info-box">
@@ -487,7 +514,7 @@
                 </div>
 
                 <!-- Loading State -->
-                <div class="loading-state hidden" id="loadingState">
+                <div class="loading-state" id="loadingState" aria-live="polite" aria-busy="true">
                     <div class="spinner"></div>
                     <p>Generating your questions...</p>
                 </div>
@@ -498,7 +525,8 @@
                         <h3>Interview Questions</h3>
                         <span class="topic-badge" id="topicBadge"></span>
                     </div>
-                    <div class="results-content" id="resultsContent"></div>
+                    <div class="results-content" id="resultsContent" tabindex="0" aria-label="Interview questions">
+                    </div>
                 </div>
             </div>
         </div>
@@ -535,9 +563,8 @@
         const resultsContent = document.getElementById('resultsContent');
 
         // Get logout button and add event listener
-        const logoutButton = document.getElementById('logoutBtn');
-        logoutButton.addEventListener('click', function (event) {
-            event.preventDefault();
+        document.getElementById('logoutBtn').addEventListener('click', e => {
+            e.preventDefault();
             logoutUser();
         });
 
@@ -562,76 +589,60 @@
             // Show loading state
             initialState.classList.add('hidden');
             resultsState.classList.remove('active');
-            loadingState.classList.remove('hidden');
+            loadingState.classList.add('active');
             generateBtn.disabled = true;
 
-            // TODO: Replace this with actual API call to your backend
-            // Example for when you add a /generate-questions endpoint:
-            /*
+            // Real API call to backend /generate-questions/ endpoint
             try {
-                const response = await authenticatedRequest('/generate-questions', {
+                const response = await authenticatedRequest('/generate-questions/', {
                     method: 'POST',
-                    body: JSON.stringify({ topic: topic })
+                    body: JSON.stringify({ service_name: topic })
                 });
-                
-                if (response.questions) {
-                    // Update results with real data
+
+                if (response && response.questions) {
+                    // Hide loading state
+                    loadingState.classList.remove('active');
+
+                    // Update results with real AI-generated data
                     topicBadge.textContent = topic;
-                    
+
+                    // Parse the questions string - backend returns numbered list as text
+                    const questionsText = response.questions;
+                    const questionLines = questionsText.split('\n').filter(line => line.trim());
+
+                    // Create ordered list HTML
                     let questionsHTML = '<ol>';
-                    response.questions.forEach(function(question) {
-                        questionsHTML += '<li><strong>Question:</strong> ' + question + '</li>';
+                    questionLines.forEach(function (line) {
+                        // Remove leading numbers if present (e.g., "1. Question" -> "Question")
+                        const cleanLine = line.replace(/^\d+\.\s*/, '');
+                        if (cleanLine.trim()) {
+                            questionsHTML += '<li>' + cleanLine + '</li>';
+                        }
                     });
                     questionsHTML += '</ol>';
-                    
+
                     resultsContent.innerHTML = questionsHTML;
-                    loadingState.classList.add('hidden');
+
+                    // Show results state
                     resultsState.classList.add('active');
                     generateBtn.disabled = false;
+                    resultsContent.focus();
+                } else {
+                    throw new Error('No questions received from server');
                 }
             } catch (error) {
-                loadingState.classList.add('hidden');
+                // Hide loading state & show initial state
+                loadingState.classList.remove('active');
                 initialState.classList.remove('hidden');
-                alert('Failed to generate questions: ' + error.message);
+
+                // Show user-friendly error message
+                alert('Failed to generate questions: ' + (error.message || 'Please try again.'));
                 generateBtn.disabled = false;
+                console.error('Error:', error);
             }
-            */
-
-            // Simulate API call with setTimeout (3 seconds) - FOR TESTING ONLY
-            setTimeout(function () {
-                // Hide loading state
-                loadingState.classList.add('hidden');
-
-                // Update results with sample data
-                topicBadge.textContent = topic;
-
-                // Generate sample questions based on the topic
-                const sampleQuestions = [
-                    `Can you explain the core concepts of ${topic} and how they apply in real-world scenarios?`,
-                    `What are the most common challenges you've faced when working with ${topic}, and how did you overcome them?`,
-                    `Describe a project where you successfully implemented ${topic}. What was your approach?`,
-                    `How do you stay updated with the latest developments and best practices in ${topic}?`,
-                    `Can you compare ${topic} with alternative approaches or technologies? What are the trade-offs?`,
-                    `Walk me through how you would explain ${topic} to someone who has no technical background.`,
-                    `What metrics or KPIs would you use to measure success when implementing ${topic} in a project?`,
-                    `Describe a time when something went wrong while working with ${topic}. How did you debug and resolve the issue?`
-                ];
-
-                // Create ordered list HTML
-                let questionsHTML = '<ol>';
-                sampleQuestions.forEach(function (question) {
-                    questionsHTML += '<li><strong>Question:</strong> ' + question + '</li>';
-                });
-                questionsHTML += '</ol>';
-
-                resultsContent.innerHTML = questionsHTML;
-
-                // Show results state
-                resultsState.classList.add('active');
-                generateBtn.disabled = false;
-            }, 3000);
         });
     </script>
+
 </body>
 
 </html>
