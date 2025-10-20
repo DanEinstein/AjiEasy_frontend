@@ -2,7 +2,7 @@
 // This file contains all reusable authentication functions
 
 // Backend API base URL
-const API_URL = 'http://127.0.0.1:8000'; 
+const API_URL = 'http://127.0.0.1:8000';  // ✅ Matches your backend
 
 /**
  * Login user with email and password
