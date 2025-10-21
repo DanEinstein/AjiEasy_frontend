@@ -1580,20 +1580,21 @@
         let chatHistory = [];
 
         // Get logout button
-        const logoutButton = document.getElementById('logoutBtn');
+       const logoutButton = document.getElementById('logoutBtn');
         logoutButton.addEventListener('click', function (event) {
             event.preventDefault();
             if (typeof logoutUser === 'function') {
                 logoutUser();
             } else {
                 console.warn('logoutUser function not found. Make sure auth.js is loaded.');
-                // Fallback logout
-                localStorage.removeItem('token');
+                // Fallback logout - UPDATED TO MATCH auth.js
+                localStorage.removeItem('accessToken');
                 localStorage.removeItem('user');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
                 window.location.href = 'login.html';
             }
         });
-
         // Display user's name and avatar
         function getUserName() {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -1901,9 +1902,9 @@
         }
 
         // ==================== AUTHENTICATED REQUEST FUNCTION ====================
-        async function authenticatedRequest(endpoint, options = {}) {
-            const token = localStorage.getItem('token');
-            
+       async function authenticatedRequest(endpoint, options = {}) {
+            const token = localStorage.getItem('accessToken'); // ✅ Fixed
+
             const defaultOptions = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -1922,11 +1923,14 @@
 
             try {
                 const response = await fetch(`${API_CONFIG.baseURL}${endpoint}`, config);
-                
+
                 if (response.status === 401) {
-                    // Token expired or invalid
-                    localStorage.removeItem('token');
+                    // Token expired or invalid - clear all auth data
+                    console.warn('🛑 Token expired or invalid, redirecting to login');
+                    localStorage.removeItem('accessToken');
                     localStorage.removeItem('user');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userName');
                     window.location.href = 'login.html';
                     return;
                 }
@@ -1941,7 +1945,6 @@
                 throw error;
             }
         }
-
         // ==================== QUIZ FUNCTIONALITY ====================
 
         // Start quiz with real data from free APIs
