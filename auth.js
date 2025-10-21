@@ -1,8 +1,8 @@
 // auth.js - Central Authentication Module for AjiEasy
 // This file contains all reusable authentication functions
 
-// Backend API base URL
-const API_URL = 'http://127.0.0.1:8000';  // ✅ Matches your backend
+// Backend API base URL - UPDATED TO RENDER
+const API_URL = 'https://ajieasy-backend.onrender.com';
 
 /**
  * Login user with email and password
@@ -81,6 +81,7 @@ function logoutUser() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
+    localStorage.removeItem('user'); // Added for compatibility with app.html
     
     // Redirect to login page
     window.location.href = 'login.html';
@@ -162,10 +163,50 @@ async function authenticatedRequest(endpoint, options = {}) {
             return;
         }
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         return data;
     } catch (error) {
         console.error('API request error:', error);
         throw error;
     }
+}
+
+// Enhanced user data management for better compatibility
+function saveUserData(userData) {
+    if (userData) {
+        localStorage.setItem('user', JSON.stringify(userData));
+        if (userData.email) localStorage.setItem('userEmail', userData.email);
+        if (userData.name) localStorage.setItem('userName', userData.name);
+    }
+}
+
+function getUserData() {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+}
+
+// Check if user is logged in (without redirect)
+function isLoggedIn() {
+    return !!localStorage.getItem('accessToken');
+}
+
+// Export functions for use in other modules (if using modules)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        loginUser,
+        registerUser,
+        logoutUser,
+        checkAuth,
+        getToken,
+        getUserEmail,
+        getUserName,
+        authenticatedRequest,
+        saveUserData,
+        getUserData,
+        isLoggedIn
+    };
 }

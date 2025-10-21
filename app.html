@@ -1490,20 +1490,21 @@
         </div>
     </footer>
 
-    <!-- Load authentication module -->
-    <script src="auth.js"></script>
-
     <!-- Load jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- App page logic -->
     <script>
         // SECURITY: Check authentication immediately
-        checkAuth();
+        if (typeof checkAuth === 'function') {
+            checkAuth();
+        } else {
+            console.warn('checkAuth function not found. Make sure auth.js is loaded.');
+        }
 
-        // API Configuration
+        // API Configuration - UPDATED TO RENDER BACKEND
         const API_CONFIG = {
-            baseURL: 'http://localhost:8000',
+            baseURL: 'https://ajieasy-backend.onrender.com',
             endpoints: {
                 generateQuestions: '/generate-questions/',
                 generateQuiz: '/generate-quiz/',
@@ -1579,10 +1580,28 @@
         const logoutButton = document.getElementById('logoutBtn');
         logoutButton.addEventListener('click', function (event) {
             event.preventDefault();
-            logoutUser();
+            if (typeof logoutUser === 'function') {
+                logoutUser();
+            } else {
+                console.warn('logoutUser function not found. Make sure auth.js is loaded.');
+                // Fallback logout
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
         });
 
         // Display user's name and avatar
+        function getUserName() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            return user.name || '';
+        }
+
+        function getUserEmail() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            return user.email || '';
+        }
+
         const userName = getUserName();
         const userEmail = getUserEmail();
         if (userName) {
@@ -1866,7 +1885,7 @@
                 const type = i % 3 === 0 ? 'technical' : i % 3 === 1 ? 'behavioral' : 'situational';
                 const templates = questionTemplates[type];
                 const question = templates[i % templates.length];
-                
+
                 questions.push({
                     question: question,
                     type: type,
@@ -1874,8 +1893,50 @@
                     explanation: `This ${type} question assesses your ${topic} knowledge in ${jobDesc.toLowerCase()} contexts.`
                 });
             }
-            
+
             return questions;
+        }
+
+        // ==================== AUTHENTICATED REQUEST FUNCTION ====================
+        async function authenticatedRequest(endpoint, options = {}) {
+            const token = localStorage.getItem('token');
+            
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : ''
+                }
+            };
+
+            const config = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_CONFIG.baseURL}${endpoint}`, config);
+                
+                if (response.status === 401) {
+                    // Token expired or invalid
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                throw error;
+            }
         }
 
         // ==================== QUIZ FUNCTIONALITY ====================
@@ -2543,7 +2604,7 @@
 
                 // IMPROVED ERROR HANDLING - Multiple response formats
                 let questions = [];
-                
+
                 if (response && Array.isArray(response)) {
                     // Direct array response
                     questions = response;
@@ -2600,9 +2661,9 @@
             } catch (error) {
                 clearInterval(progressInterval);
                 progressBar.style.width = '0%';
-                
+
                 console.error('API Error, using local fallback:', error);
-                
+
                 // Use local fallback on error
                 const localQuestions = generateLocalQuestions(topic, jobDesc, interviewType, companyNature);
                 currentQuestions = localQuestions;
@@ -2632,7 +2693,7 @@
 
                 saveToHistory(topic, jobDesc, interviewType, companyNature);
                 showToast(`Generated ${localQuestions.length} questions using local generator!`, 'info');
-                
+
             } finally {
                 // Hide progress bar after a short delay
                 setTimeout(() => {
@@ -2754,6 +2815,9 @@
                 initializeChat();
             }
         });
+
+        // Initialize the app
+        loadHistory();
     </script>
 </body>
 
