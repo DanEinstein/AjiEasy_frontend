@@ -4,12 +4,27 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AjiEasy - Ace Your Next Interview with AI</title>
+    <title>AjiEasy - AI-Powered Interview Preparation Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* All your original styles copied exactly */
+        :root {
+            --primary-blue: #0f3460;
+            --primary-teal: #16c79a;
+            --accent-purple: #667eea;
+            --accent-pink: #764ba2;
+            --dark-blue: #1a1a2e;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,48 +33,83 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            color: #1a1a2e;
-            line-height: 1.6;
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
         /* Navbar */
         .navbar {
-            background-color: #0f3460;
-            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(255, 255, 255, 0.98);
         }
 
         .brand {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            color: var(--primary-blue);
+            font-size: 2rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand i {
+            color: var(--primary-teal);
+            font-size: 2.2rem;
         }
 
         .nav-menu {
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             align-items: center;
         }
 
         .nav-menu a {
-            color: white;
+            color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .nav-menu a:hover {
-            background-color: #16c79a;
-            color: white;
+            color: var(--primary-teal);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-teal);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a:hover::after {
+            width: 80%;
         }
 
         .nav-buttons {
@@ -68,271 +118,442 @@
         }
 
         .btn {
-            padding: 0.7rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-login {
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
         }
 
         .btn-login:hover {
-            background-color: white;
-            color: #0f3460;
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .btn-signup {
-            background-color: #16c79a;
+            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
             color: white;
+            box-shadow: 0 8px 25px rgba(22, 199, 154, 0.3);
         }
 
         .btn-signup:hover {
-            background-color: #13a77e;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(22, 199, 154, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(22, 199, 154, 0.4);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg,
-                    rgba(15, 52, 96, 0.9),
-                    rgba(22, 199, 154, 0.8)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%230f3460" width="1200" height="600"/><circle cx="200" cy="150" r="100" fill="%2316c79a" opacity="0.1"/><circle cx="900" cy="400" r="150" fill="%2316c79a" opacity="0.1"/><circle cx="600" cy="300" r="80" fill="%23ffffff" opacity="0.05"/></svg>');
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
             color: white;
-            padding: 8rem 2rem;
-            text-align: center;
-            min-height: 600px;
+            padding: 12rem 5% 8rem;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             max-width: 700px;
-            margin: 0 auto 2.5rem;
-            font-weight: 300;
+            margin: 0 auto 3rem;
+            font-weight: 400;
             line-height: 1.8;
+            opacity: 0.95;
         }
 
         .btn-cta {
-            background-color: #16c79a;
+            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
             color: white;
-            padding: 1.2rem 3rem;
+            padding: 1.3rem 3rem;
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
             border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(22, 199, 154, 0.4);
+            box-shadow: 0 15px 40px rgba(22, 199, 154, 0.4);
+            transition: all 0.3s ease;
         }
 
         .btn-cta:hover {
-            background-color: #13a77e;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(22, 199, 154, 0.5);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(22, 199, 154, 0.6);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
         }
 
         /* How It Works Section */
         .how-it-works {
-            padding: 5rem 2rem;
-            background-color: #f8f9fa;
+            padding: 8rem 5%;
+            background: var(--light-bg);
+            position: relative;
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #0f3460;
-            margin-bottom: 3rem;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 4rem;
         }
 
         .steps {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 3rem;
-            flex-wrap: wrap;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .step {
-            flex: 1;
-            min-width: 250px;
-            max-width: 350px;
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: 20px;
             text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--accent-purple));
         }
 
         .step:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
         }
 
         .step-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #16c79a;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
         }
 
         .step h3 {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: #0f3460;
+            font-weight: 700;
+            color: var(--primary-blue);
             margin-bottom: 1rem;
         }
 
         .step p {
-            color: #555;
-            font-size: 1rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
 
         /* Features Section */
         .features {
-            padding: 5rem 2rem;
-            background-color: white;
+            padding: 8rem 5%;
+            background: var(--white);
         }
 
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .feature-card {
-            background: linear-gradient(135deg, #0f3460, #16c79a);
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
             color: white;
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
         }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(22, 199, 154, 0.3);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(15, 52, 96, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-teal);
         }
 
         .feature-card h3 {
             font-size: 1.8rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
         }
 
         .feature-card p {
             font-size: 1.1rem;
             line-height: 1.7;
             opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: white;
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="200" cy="100" r="80" fill="%2316c79a" opacity="0.1"/><circle cx="1000" cy="400" r="120" fill="%2316c79a" opacity="0.1"/><circle cx="600" cy="200" r="60" fill="%23ffffff" opacity="0.05"/></svg>');
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
         }
 
         /* Footer */
         .footer {
-            background-color: #0f3460;
+            background: var(--dark-blue);
             color: white;
-            padding: 2rem;
-            text-align: center;
+            padding: 4rem 5% 2rem;
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
         }
 
-        .footer-links {
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-brand i {
+            color: var(--primary-teal);
+        }
+
+        .footer-about {
+            color: #a0aec0;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-teal);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
         }
 
         .footer-links a {
-            color: white;
+            color: #a0aec0;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: #16c79a;
+            color: var(--primary-teal);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            padding-top: 2rem;
+            text-align: center;
+            color: #a0aec0;
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 10rem 5% 6rem;
+            }
+
             .hero h1 {
                 font-size: 2.5rem;
             }
 
             .hero p {
-                font-size: 1.1rem;
-            }
-
-            .navbar {
-                padding: 1rem;
-            }
-
-            .brand {
-                font-size: 1.5rem;
-            }
-
-            .nav-buttons {
-                gap: 0.5rem;
-            }
-
-            .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .steps {
-                gap: 2rem;
+                font-size: 1.2rem;
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
             }
 
             .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .hero {
-                padding: 5rem 1rem;
-            }
-
             .hero h1 {
                 font-size: 2rem;
             }
@@ -346,88 +567,229 @@
                 font-size: 1rem;
             }
 
-            .step {
-                min-width: 100%;
+            .hero-stats {
+                gap: 2rem;
             }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .cta-section h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar" role="navigation" aria-label="Primary Navigation">
-        <div class="brand">AjiEasy</div>
-        <div class="nav-menu" role="menubar" aria-label="Primary menu">
-            <a href="index.html" role="menuitem" tabindex="0">Home</a>
-            <a href="about.html" role="menuitem" tabindex="0">About</a>
-            <a href="galleries.html" role="menuitem" tabindex="0">Gallery</a>
-            <a href="contacts.html" role="menuitem" tabindex="0">Contacts</a>
-            <a href="testimonials.html" role="menuitem" tabindex="0">Testimonials</a>
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="brand">
+            <i class="fas fa-rocket"></i>
+            AjiEasy
+        </a>
+        <div class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="galleries.html">Gallery</a>
+            <a href="contacts.html">Contact</a>
+            <a href="testimonials.html">Testimonials</a>
         </div>
         <div class="nav-buttons">
-            <a href="login.html" class="btn btn-login" role="button">Log In</a>
-            <a href="register.html" class="btn btn-signup" role="button">Sign Up</a>
+            <a href="login.html" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i>
+                Log In
+            </a>
+            <a href="register.html" class="btn btn-signup">
+                <i class="fas fa-user-plus"></i>
+                Sign Up
+            </a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero" role="banner">
-        <h1>Ace Your Next Interview with AI</h1>
-        <p>AjiEasy provides AI-generated interview questions and preparation tips to help you land your dream job.</p>
-        <a href="register.html" class="btn btn-cta">Get Started Today</a>
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fade-in">Master Your Next Interview with AI</h1>
+            <p class="fade-in">AjiEasy transforms interview preparation with cutting-edge AI technology. Generate
+                personalized questions, practice effectively, and land your dream job with confidence.</p>
+            <a href="register.html" class="btn btn-cta fade-in">
+                <i class="fas fa-play-circle"></i>
+                Start Your Journey
+            </a>
+            <div class="hero-stats">
+                <div class="stat fade-in">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Questions Generated</div>
+                </div>
+                <div class="stat fade-in">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat fade-in">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Assistance</div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- How It Works Section -->
     <section class="how-it-works">
-        <h2 class="section-title">How It Works</h2>
+        <h2 class="section-title fade-in">How AjiEasy Works</h2>
+        <p class="section-subtitle fade-in">Three simple steps to interview mastery</p>
         <div class="steps">
-            <div class="step">
-                <div class="step-icon">✓</div>
-                <h3>Sign Up</h3>
-                <p>Create your free account in seconds.</p>
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>Create Your Account</h3>
+                <p>Sign up in seconds and unlock the power of AI-driven interview preparation tailored to your career
+                    goals.</p>
             </div>
-            <div class="step">
-                <div class="step-icon">✎</div>
-                <h3>Enter a Topic</h3>
-                <p>Tell our AI what job you're preparing for.</p>
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3>Customize Your Session</h3>
+                <p>Tell our AI about your target role, company, and interview type to get perfectly tailored questions.
+                </p>
             </div>
-            <div class="step">
-                <div class="step-icon">★</div>
-                <h3>Get Questions</h3>
-                <p>Receive a custom list of interview questions and start practicing.</p>
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Practice & Excel</h3>
+                <p>Receive AI-generated questions, practice your responses, and build unshakable confidence for your
+                    interview.</p>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
     <section class="features">
-        <h2 class="section-title">Why Choose AjiEasy?</h2>
+        <h2 class="section-title fade-in">Why Choose AjiEasy?</h2>
+        <p class="section-subtitle fade-in">Experience the future of interview preparation</p>
         <div class="feature-grid">
-            <div class="feature-card">
-                <h3>AI-Powered Practice</h3>
-                <p>Leverage Google's Gemini AI to get relevant, challenging questions.</p>
+            <div class="feature-card fade-in">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3>Advanced AI Technology</h3>
+                <p>Powered by Google's Gemini AI, our platform generates relevant, challenging questions that mirror
+                    real interviews.</p>
             </div>
-            <div class="feature-card">
-                <h3>Unlimited Topics</h3>
-                <p>From 'Python programming' to 'Behavioral questions,' practice for any role.</p>
+            <div class="feature-card fade-in">
+                <i class="fas fa-infinity feature-icon"></i>
+                <h3>Unlimited Possibilities</h3>
+                <p>From technical roles to leadership positions, practice for any interview scenario across all
+                    industries.</p>
             </div>
-            <div class="feature-card">
-                <h3>Build Confidence</h3>
-                <p>Walk into your next interview fully prepared and confident.</p>
+            <div class="feature-card fade-in">
+                <i class="fas fa-chart-line feature-icon"></i>
+                <h3>Track Your Progress</h3>
+                <p>Monitor your improvement over time with detailed analytics and personalized feedback on your
+                    performance.</p>
             </div>
         </div>
     </section>
 
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="fade-in">Ready to Ace Your Next Interview?</h2>
+            <p class="fade-in">Join thousands of successful candidates who landed their dream jobs with AjiEasy.</p>
+            <a href="register.html" class="btn btn-cta fade-in">
+                <i class="fas fa-rocket"></i>
+                Get Started Free
+            </a>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="footer" role="contentinfo">
+    <footer class="footer">
         <div class="footer-content">
-            <div>&copy; 2025 AjiEasy</div>
+            <div>
+                <div class="footer-brand">
+                    <i class="fas fa-rocket"></i>
+                    AjiEasy
+                </div>
+                <p class="footer-about">
+                    AjiEasy is revolutionizing interview preparation through AI-powered question generation and
+                    personalized coaching. Join us in shaping the future of career success.
+                </p>
+            </div>
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="galleries.html">Gallery</a></li>
+                    <li><a href="contacts.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                </ul>
             </div>
         </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AjiEasy - AI Interview Preparation Platform. All rights reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(element => {
+            fadeInObserver.observe(element);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

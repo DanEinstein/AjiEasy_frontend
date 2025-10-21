@@ -3,13 +3,28 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Testimonials - AjiEasy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Testimonials - AjiEasy | Success Stories from Kenya</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Full index.html style embedded */
+        :root {
+            --primary-blue: #0f3460;
+            --primary-teal: #16c79a;
+            --accent-purple: #667eea;
+            --accent-pink: #764ba2;
+            --dark-blue: #1a1a2e;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,48 +33,89 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            color: #1a1a2e;
-            line-height: 1.6;
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+            background: var(--light-bg);
         }
 
+        /* Navbar */
         .navbar {
-            background-color: #0f3460;
-            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(255, 255, 255, 0.98);
         }
 
         .brand {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            color: var(--primary-blue);
+            font-size: 2rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand i {
+            color: var(--primary-teal);
+            font-size: 2.2rem;
         }
 
         .nav-menu {
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             align-items: center;
         }
 
         .nav-menu a {
-            color: white;
+            color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-menu a:hover,
+        .nav-menu a:hover {
+            color: var(--primary-teal);
+            transform: translateY(-2px);
+        }
+
         .nav-menu a[aria-current="page"] {
-            background-color: #16c79a;
-            color: white;
+            color: var(--primary-teal);
+            background: rgba(22, 199, 154, 0.1);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-teal);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a:hover::after {
+            width: 80%;
         }
 
         .nav-buttons {
@@ -68,172 +124,454 @@
         }
 
         .btn {
-            padding: 0.7rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-login {
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
         }
 
         .btn-login:hover {
-            background-color: white;
-            color: #0f3460;
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .btn-signup {
-            background-color: #16c79a;
+            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
             color: white;
+            box-shadow: 0 8px 25px rgba(22, 199, 154, 0.3);
         }
 
         .btn-signup:hover {
-            background-color: #13a77e;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(22, 199, 154, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(22, 199, 154, 0.4);
         }
 
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(22, 199, 154, 0.8)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%230f3460" width="1200" height="600"/><circle cx="200" cy="150" r="100" fill="%2316c79a" opacity="0.1"/><circle cx="900" cy="400" r="150" fill="%2316c79a" opacity="0.1"/><circle cx="600" cy="300" r="80" fill="%23ffffff" opacity="0.05"/></svg>');
-            background-size: cover;
-            background-position: center;
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/><circle cx="300" cy="200" r="120" fill="%2316c79a" opacity="0.1"/><circle cx="900" cy="500" r="180" fill="%2316c79a" opacity="0.1"/></svg>');
             color: white;
-            padding: 8rem 2rem;
-            text-align: center;
-            min-height: 600px;
+            padding: 12rem 5% 6rem;
+            min-height: 60vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             max-width: 700px;
-            margin: 0 auto 2.5rem;
-            font-weight: 300;
+            margin: 0 auto 3rem;
+            font-weight: 400;
             line-height: 1.8;
+            opacity: 0.95;
         }
 
-        .how-it-works {
-            padding: 5rem 2rem;
-            background-color: #f8f9fa;
+        /* Testimonials Section */
+        .testimonials {
+            padding: 6rem 5%;
+            background: var(--white);
         }
 
-        .steps {
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .testimonials-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .step {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            font-size: 1rem;
-            color: #555;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .testimonial-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid #e2e8f0;
         }
 
-        .step:hover {
+        .testimonial-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-hover);
         }
 
-        .footer {
-            background-color: #0f3460;
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            font-size: 4rem;
+            color: var(--primary-teal);
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        .testimonial-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
             color: white;
-            padding: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Success Stories */
+        .success-stories {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: white;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .story-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .story-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .story-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-teal);
+        }
+
+        .story-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .story-card p {
+            opacity: 0.95;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Companies Section */
+        .companies {
+            padding: 4rem 5%;
+            background: var(--white);
             text-align: center;
+        }
+
+        .companies h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+        }
+
+        .companies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .company-logo {
+            height: 60px;
+            background: var(--light-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .company-logo:hover {
+            transform: scale(1.1);
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 5%;
+            background: var(--light-bg);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
+            color: white;
+            padding: 1.3rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            box-shadow: 0 15px 40px rgba(22, 199, 154, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(22, 199, 154, 0.6);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-blue);
+            color: white;
+            padding: 4rem 5% 2rem;
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
         }
 
-        .footer-links {
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-brand i {
+            color: var(--primary-teal);
+        }
+
+        .footer-about {
+            color: #a0aec0;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-teal);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
         }
 
         .footer-links a {
-            color: white;
+            color: #a0aec0;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: #16c79a;
+            color: var(--primary-teal);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            padding-top: 2rem;
+            text-align: center;
+            color: #a0aec0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 10rem 5% 4rem;
+            }
+
             .hero h1 {
                 font-size: 2.5rem;
             }
 
             .hero p {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
 
-            .navbar {
-                padding: 1rem;
+            .section-title {
+                font-size: 2.2rem;
             }
 
-            .brand {
-                font-size: 1.5rem;
+            .testimonials-grid {
+                grid-template-columns: 1fr;
             }
 
-            .nav-buttons {
-                gap: 0.5rem;
+            .stories-grid {
+                grid-template-columns: 1fr;
             }
 
-            .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
+            .companies-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cta-section h2 {
+                font-size: 2.2rem;
             }
 
             .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .hero {
-                padding: 5rem 1rem;
-            }
-
             .hero h1 {
                 font-size: 2rem;
             }
@@ -247,46 +585,304 @@
                 font-size: 1rem;
             }
         }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar" role="navigation" aria-label="Primary Navigation">
-        <div class="brand">AjiEasy</div>
-        <div class="nav-menu" role="menubar">
-            <a href="index.html" role="menuitem" tabindex="0">Home</a>
-            <a href="about.html" role="menuitem" tabindex="0">About</a>
-            <a href="galleries.html" role="menuitem" tabindex="0">Gallery</a>
-            <a href="contacts.html" role="menuitem" tabindex="0">Contacts</a>
-            <a href="testimonials.html" role="menuitem" tabindex="0" aria-current="page">Testimonials</a>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="brand">
+            <i class="fas fa-rocket"></i>
+            AjiEasy
+        </a>
+        <div class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="galleries.html">Gallery</a>
+            <a href="contacts.html">Contact</a>
+            <a href="testimonials.html" aria-current="page">Testimonials</a>
         </div>
         <div class="nav-buttons">
-            <a href="login.html" class="btn btn-login">Log In</a>
-            <a href="register.html" class="btn btn-signup">Sign Up</a>
+            <a href="login.html" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i>
+                Log In
+            </a>
+            <a href="register.html" class="btn btn-signup">
+                <i class="fas fa-user-plus"></i>
+                Sign Up
+            </a>
         </div>
     </nav>
 
-    <section class="hero" role="banner">
-        <h1>User Testimonials</h1>
-        <p>Read what our satisfied users say about their experience with AjiEasy.</p>
-        <div class="how-it-works">
-            <div class="steps">
-                <div class="step">“AjiEasy helped me nail my software developer interview!” – Sarah M.</div>
-                <div class="step">“Customized questions that fit my career perfectly.” – John D.</div>
-                <div class="step">“AjiEasy made interview prep easy and effective!” – Emily K.</div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fade-in">Real Stories from Kenyan Professionals</h1>
+            <p class="fade-in">Discover how AjiEasy is transforming careers across Kenya. Read authentic success stories
+                from professionals who landed their dream jobs with our AI-powered interview preparation.</p>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2 class="section-title fade-in">What Our Users Say</h2>
+        <p class="section-subtitle fade-in">Authentic testimonials from Kenyan professionals across various industries
+        </p>
+
+        <div class="testimonials-grid">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"AjiEasy completely transformed my job search. After struggling with
+                        technical interviews for months, I used the platform for two weeks and landed a software
+                        engineer role at Safaricom. The AI-generated questions were incredibly relevant!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">WK</div>
+                        <div class="author-info">
+                            <h4>Wanjiku Kamau</h4>
+                            <p>Software Engineer • Safaricom</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"As a recent graduate from JKUAT, I was nervous about my first corporate
+                        interview. AjiEasy gave me the confidence I needed. The behavioral questions prepared me so well
+                        that the interview felt like a conversation!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">KO</div>
+                        <div class="author-info">
+                            <h4>Kevin Ochieng</h4>
+                            <p>Business Analyst • KCB Group</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"Moving from a local company to an international organization seemed
+                        impossible. AjiEasy's tailored questions for multinational companies helped me secure a position
+                        at Microsoft ADC. Pole pole, I became interview-ready!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AM</div>
+                        <div class="author-info">
+                            <h4>Ann Mwende</h4>
+                            <p>Product Manager • Microsoft ADC</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 4 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"The platform's focus on Kenyan companies made all the difference. I
+                        practiced with questions specific to the Kenyan tech ecosystem and landed my dream job at Twiga
+                        Foods. Asante sana AjiEasy!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JM</div>
+                        <div class="author-info">
+                            <h4>Jamal Mohammed</h4>
+                            <p>Data Scientist • Twiga Foods</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 5 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"After being laid off during the pandemic, I needed to upskill quickly.
+                        AjiEasy's AI adapted to the fintech industry and helped me transition from traditional banking
+                        to a exciting role at Pezesha."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">NK</div>
+                        <div class="author-info">
+                            <h4>Naomi Kibet</h4>
+                            <p>Fintech Specialist • Pezesha</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 6 -->
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"The mobile experience is perfect for Nairobi's on-the-go lifestyle. I
+                        practiced during my matatu commutes and within three weeks, I went from multiple rejections to
+                        three job offers. Hakuna matata with AjiEasy!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">PM</div>
+                        <div class="author-info">
+                            <h4>Peter Maina</h4>
+                            <p>UX Designer • Sendy</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <div>&copy; 2025 AjiEasy</div>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+    <!-- Success Stories -->
+    <section class="success-stories">
+        <h2 class="section-title fade-in">Remarkable Career Transformations</h2>
+        <p class="section-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Inspiring journeys of Kenyan
+            professionals who transformed their careers</p>
+
+        <div class="stories-grid">
+            <div class="story-card fade-in">
+                <i class="fas fa-graduation-cap story-icon"></i>
+                <h3>From Campus to Corporate</h3>
+                <p>Grace Atieno used AjiEasy during her final year at Moi University. She practiced daily and secured a
+                    graduate trainee position at Equity Bank before even completing her studies.</p>
+                <div class="story-meta">
+                    <span>3 weeks preparation</span>
+                    <span>Nairobi</span>
+                </div>
+            </div>
+
+            <div class="story-card fade-in">
+                <i class="fas fa-chart-line story-icon"></i>
+                <h3>Career Pivot Success</h3>
+                <p>David Otieno transitioned from teaching to tech. Using AjiEasy's tailored learning path, he mastered
+                    technical interviews and now works as a junior developer at Andela.</p>
+                <div class="story-meta">
+                    <span>2 months journey</span>
+                    <span>Kisumu</span>
+                </div>
+            </div>
+
+            <div class="story-card fade-in">
+                <i class="fas fa-briefcase story-icon"></i>
+                <h3>International Opportunity</h3>
+                <p>Sarah Chebet prepared for her remote job interview with a European company. AjiEasy's cross-cultural
+                    questions helped her land a 4x salary increase working remotely.</p>
+                <div class="story-meta">
+                    <span>1 month preparation</span>
+                    <span>Nakuru</span>
+                </div>
             </div>
         </div>
+    </section>
+
+    <!-- Companies Section -->
+    <section class="companies">
+        <h2 class="fade-in">Trusted by Professionals at Leading Companies</h2>
+        <div class="companies-grid">
+            <div class="company-logo fade-in">Safaricom</div>
+            <div class="company-logo fade-in">KCB Group</div>
+            <div class="company-logo fade-in">Equity Bank</div>
+            <div class="company-logo fade-in">Microsoft ADC</div>
+            <div class="company-logo fade-in">Twiga Foods</div>
+            <div class="company-logo fade-in">Sendy</div>
+            <div class="company-logo fade-in">Andela</div>
+            <div class="company-logo fade-in">Pezesha</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="fade-in">Ready to Write Your Success Story?</h2>
+            <p class="fade-in">Join thousands of Kenyan professionals who have transformed their careers with AjiEasy.
+                Start your journey to interview success today.</p>
+            <a href="register.html" class="btn-cta fade-in">
+                <i class="fas fa-play-circle"></i>
+                Begin Your Success Story
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">
+                    <i class="fas fa-rocket"></i>
+                    AjiEasy
+                </div>
+                <p class="footer-about">
+                    Empowering Kenyan professionals with AI-powered interview preparation. Join our growing community of
+                    successful candidates across East Africa.
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="galleries.html">Gallery</a></li>
+                    <li><a href="contacts.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AjiEasy - AI Interview Preparation Platform. Proudly serving Kenyan professionals.</p>
+        </div>
     </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(element => {
+            fadeInObserver.observe(element);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
