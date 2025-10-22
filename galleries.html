@@ -15,7 +15,6 @@
             --primary-blue: #0f3460;
             --primary-teal: #16c79a;
             --accent-purple: #667eea;
-            --accent-pink: #764ba2;
             --dark-blue: #1a1a2e;
             --light-bg: #f8f9fa;
             --white: #ffffff;
@@ -38,134 +37,229 @@
             overflow-x: hidden;
             background: var(--light-bg);
         }
+/* Navbar */
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
 
-        /* Navbar */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 1.2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
+.navbar.scrolled {
+    padding: 0.8rem 5%;
+    background: rgba(255, 255, 255, 0.98);
+}
 
-        .navbar.scrolled {
-            padding: 0.8rem 5%;
-            background: rgba(255, 255, 255, 0.98);
-        }
+.brand {
+    color: var(--primary-blue);
+    font-size: 2rem;
+    font-weight: 800;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1001;
+}
 
-        .brand {
-            color: var(--primary-blue);
-            font-size: 2rem;
-            font-weight: 800;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.brand i {
+    color: var(--primary-teal);
+    font-size: 2.2rem;
+}
 
-        .brand i {
-            color: var(--primary-teal);
-            font-size: 2.2rem;
-        }
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
 
-        .nav-menu {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
+.nav-menu a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
 
-        .nav-menu a {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+.nav-menu a:hover {
+    color: var(--primary-teal);
+    transform: translateY(-2px);
+}
 
-        .nav-menu a:hover {
-            color: var(--primary-teal);
-            transform: translateY(-2px);
-        }
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-teal);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
 
-        .nav-menu a[aria-current="page"] {
-            color: var(--primary-teal);
-            background: rgba(22, 199, 154, 0.1);
-        }
+.nav-menu a:hover::after {
+    width: 80%;
+}
 
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--primary-teal);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
 
-        .nav-menu a:hover::after {
-            width: 80%;
-        }
+.btn {
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-        }
+.btn-login {
+    background: transparent;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+}
 
-        .btn {
-            padding: 0.8rem 1.8rem;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.btn-login:hover {
+    background: var(--primary-blue);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
 
-        .btn-login {
-            background: transparent;
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-        }
+.btn-signup {
+    background: linear-gradient(135deg, var(--primary-teal), #13a77e);
+    color: white;
+    box-shadow: 0 8px 25px rgba(22, 199, 154, 0.3);
+}
 
-        .btn-login:hover {
-            background: var(--primary-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
+.btn-signup:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(22, 199, 154, 0.4);
+}
 
-        .btn-signup {
-            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
-            color: white;
-            box-shadow: 0 8px 25px rgba(22, 199, 154, 0.3);
-        }
+/* Mobile Menu Button */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
 
-        .btn-signup:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(22, 199, 154, 0.4);
-        }
+.menu-toggle span {
+    width: 100%;
+    height: 3px;
+    background: var(--primary-blue);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: left;
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 6rem;
+        gap: 0;
+        transition: all 0.3s ease;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-menu a {
+        width: 100%;
+        padding: 1.2rem 2rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transform: none;
+    }
+
+    .nav-menu a:hover {
+        transform: none;
+        background: rgba(22, 199, 154, 0.1);
+    }
+
+    .nav-menu a::after {
+        display: none;
+    }
+
+    .nav-buttons {
+        display: none;
+    }
+
+    .mobile-nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 2rem;
+        width: 100%;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        margin-top: auto;
+    }
+
+    .mobile-nav-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+}
+
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(22, 199, 154, 0.8)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/><circle cx="300" cy="200" r="120" fill="%2316c79a" opacity="0.1"/><circle cx="900" cy="500" r="180" fill="%2316c79a" opacity="0.1"/></svg>');
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(22, 199, 154, 0.8));
             color: white;
             padding: 12rem 5% 6rem;
             min-height: 60vh;
@@ -203,122 +297,77 @@
             opacity: 0.95;
         }
 
-        /* Gallery Filters */
-        .gallery-filters {
-            padding: 2rem 5%;
-            background: var(--white);
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .filter-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .filter-btn {
-            padding: 0.8rem 1.5rem;
-            background: transparent;
-            border: 2px solid var(--primary-blue);
-            color: var(--primary-blue);
-            border-radius: 25px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--primary-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        /* Gallery Grid */
+        /* Gallery Sections */
         .gallery-section {
             padding: 4rem 5%;
         }
 
-        .gallery-grid {
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 3rem;
+        }
+
+        /* Screenshot Gallery - Optimized for your images */
+        .screenshot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .gallery-item {
+        .screenshot-item {
             background: var(--white);
-            border-radius: 20px;
+            border-radius: 15px;
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
-            position: relative;
         }
 
-        .gallery-item:hover {
-            transform: translateY(-10px);
+        .screenshot-item:hover {
+            transform: translateY(-5px);
             box-shadow: var(--shadow-hover);
         }
 
-        .gallery-image {
+        .screenshot-image {
             width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            height: 200px;
+            background: var(--light-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 3rem;
-            position: relative;
             overflow: hidden;
         }
 
-        .gallery-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.1);
+        .screenshot-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        .gallery-content {
+        .screenshot-item:hover .screenshot-image img {
+            transform: scale(1.05);
+        }
+
+        .screenshot-content {
             padding: 1.5rem;
         }
 
-        .gallery-content h3 {
-            font-size: 1.4rem;
+        .screenshot-content h3 {
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-blue);
             margin-bottom: 0.5rem;
         }
 
-        .gallery-content p {
+        .screenshot-content p {
             color: var(--text-light);
             line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .gallery-tags {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: rgba(22, 199, 154, 0.1);
-            color: var(--primary-teal);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         /* Feature Showcase */
@@ -429,6 +478,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
 
         .btn-cta:hover {
@@ -519,10 +569,6 @@
                 padding: 1rem 5%;
             }
 
-            .nav-menu {
-                display: none;
-            }
-
             .hero {
                 padding: 10rem 5% 4rem;
             }
@@ -535,7 +581,11 @@
                 font-size: 1.2rem;
             }
 
-            .gallery-grid {
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .screenshot-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -562,22 +612,13 @@
                 font-size: 1rem;
             }
 
-            .filter-buttons {
-                gap: 0.5rem;
-            }
-
-            .filter-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-
             .btn-cta {
                 padding: 1rem 2rem;
                 font-size: 1rem;
             }
         }
 
-        /* Animation Classes */
+        /* Animation */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -592,172 +633,122 @@
 </head>
 
 <body>
-    <!-- Navbar -->
+    <    <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <a href="index.html" class="brand">
             <i class="fas fa-rocket"></i>
             AjiEasy
         </a>
-        <div class="nav-menu">
+        
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
-            <a href="galleries.html" aria-current="page">Gallery</a>
+            <a href="galleries.html">Gallery</a>
             <a href="contacts.html">Contact</a>
             <a href="testimonials.html">Testimonials</a>
-        </div>
-        <div class="nav-buttons">
-            <a href="login.html" class="btn btn-login">
-                <i class="fas fa-sign-in-alt"></i>
-                Log In
-            </a>
-            <a href="register.html" class="btn btn-signup">
-                <i class="fas fa-user-plus"></i>
-                Sign Up
-            </a>
+            
+            <!-- Mobile Navigation Buttons -->
+            <div class="mobile-nav-buttons">
+                <a href="login.html" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Log In
+                </a>
+                <a href="register.html" class="btn btn-signup">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1 class="fade-in">Explore AjiEasy in Action</h1>
-            <p class="fade-in">Discover how our AI-powered platform transforms interview preparation through intuitive
-                design and powerful features.</p>
+            <h1 class="fade-in">AjiEasy in Action</h1>
+            <p class="fade-in">See how our AI-powered platform transforms interview preparation with real screenshots
+                and features</p>
         </div>
     </section>
 
-    <!-- Gallery Filters -->
-    <section class="gallery-filters">
-        <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All Features</button>
-            <button class="filter-btn" data-filter="interface">User Interface</button>
-            <button class="filter-btn" data-filter="ai">AI Features</button>
-            <button class="filter-btn" data-filter="mobile">Mobile Experience</button>
-            <button class="filter-btn" data-filter="results">Success Stories</button>
-        </div>
-    </section>
-
-    <!-- Gallery Grid -->
+    <!-- Main Screenshots Section -->
     <section class="gallery-section">
-        <div class="gallery-grid">
-            <!-- Interface Items -->
-            <div class="gallery-item fade-in" data-category="interface">
-                <div class="gallery-image">
-                    <i class="fas fa-desktop"></i>
+        <h2 class="section-title fade-in">Platform Screenshots</h2>
+        <div class="screenshot-grid">
+            <!-- Dashboard Screenshot -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/dashboard.png" alt="AjiEasy Dashboard"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-desktop\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>Dashboard Overview</h3>
-                    <p>Clean, intuitive dashboard that gives you quick access to all interview preparation tools and
-                        recent activities.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">UI/UX</span>
-                        <span class="tag">Dashboard</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>Smart Dashboard</h3>
+                    <p>Clean overview of your interview preparation progress and quick access to all features</p>
                 </div>
             </div>
 
-            <div class="gallery-item fade-in" data-category="interface">
-                <div class="gallery-image">
-                    <i class="fas fa-sliders-h"></i>
+            <!-- Question Generation -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/questions_generated.png" alt="AI Question Generator"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-robot\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>Question Customization</h3>
-                    <p>Easily customize interview questions by role, company type, and difficulty level with our smart
-                        filters.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">Customization</span>
-                        <span class="tag">Filters</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>AI Question Generator</h3>
+                    <p>Generate personalized interview questions based on role, company, and experience level</p>
                 </div>
             </div>
 
-            <!-- AI Features -->
-            <div class="gallery-item fade-in" data-category="ai">
-                <div class="gallery-image">
-                    <i class="fas fa-robot"></i>
+            <!-- Mobile View -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/testquiz.jpg" alt="Mobile Interface"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-mobile-alt\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>AI Question Generation</h3>
-                    <p>Watch as our AI instantly generates relevant interview questions tailored to your specific needs
-                        and goals.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">AI</span>
-                        <span class="tag">Generation</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>Mobile Optimized</h3>
+                    <p>Practice interviews on-the-go with our fully responsive mobile interface</p>
                 </div>
             </div>
 
-            <div class="gallery-item fade-in" data-category="ai">
-                <div class="gallery-image">
-                    <i class="fas fa-brain"></i>
+            <!-- Progress Analytics -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/analytics.jpg" alt="Progress Analytics"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-chart-line\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>Smart Recommendations</h3>
-                    <p>Get personalized question recommendations based on your progress and areas that need improvement.
-                    </p>
-                    <div class="gallery-tags">
-                        <span class="tag">AI</span>
-                        <span class="tag">Personalization</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your improvement with detailed analytics and performance insights</p>
                 </div>
             </div>
 
-            <!-- Mobile Experience -->
-            <div class="gallery-item fade-in" data-category="mobile">
-                <div class="gallery-image">
-                    <i class="fas fa-mobile-alt"></i>
+            <!-- Interview Simulation -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/interview_simulation.jpg" alt="Interview Simulation"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-comments\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>Mobile Interface</h3>
-                    <p>Fully responsive design that works seamlessly across all devices, perfect for practicing on the
-                        go.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">Mobile</span>
-                        <span class="tag">Responsive</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>Interview Simulation</h3>
+                    <p>Realistic interview practice with AI-generated responses and score tracking</p>
                 </div>
             </div>
 
-            <div class="gallery-item fade-in" data-category="mobile">
-                <div class="gallery-image">
-                    <i class="fas fa-tablet-alt"></i>
+            <!-- Success Stories -->
+            <div class="screenshot-item fade-in">
+                <div class="screenshot-image">
+                    <img src="images/success_ajieasy.jpg" alt="Success Stories"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-trophy\' style=\'font-size: 3rem; color: var(--primary-teal);\'></i>';">
                 </div>
-                <div class="gallery-content">
-                    <h3>Touch-Optimized</h3>
-                    <p>Beautiful touch-friendly interface designed specifically for mobile and tablet users.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">Tablet</span>
-                        <span class="tag">Touch</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results -->
-            <div class="gallery-item fade-in" data-category="results">
-                <div class="gallery-image">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="gallery-content">
-                    <h3>Progress Analytics</h3>
-                    <p>Track your improvement over time with detailed analytics and performance insights.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">Analytics</span>
-                        <span class="tag">Progress</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-item fade-in" data-category="results">
-                <div class="gallery-image">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="gallery-content">
-                    <h3>Success Metrics</h3>
-                    <p>Visualize your preparation journey with achievement badges and success milestones.</p>
-                    <div class="gallery-tags">
-                        <span class="tag">Achievements</span>
-                        <span class="tag">Success</span>
-                    </div>
+                <div class="screenshot-content">
+                    <h3>Success Dashboard</h3>
+                    <p>Track achievements and milestones in your interview preparation journey</p>
                 </div>
             </div>
         </div>
@@ -766,29 +757,28 @@
     <!-- Feature Showcase -->
     <section class="feature-showcase">
         <div class="showcase-content">
-            <h2 class="fade-in">Why Users Love Our Platform</h2>
-            <p class="fade-in">Discover the features that make AjiEasy the most trusted interview preparation platform
-            </p>
+            <h2 class="fade-in">Platform Highlights</h2>
+            <p class="fade-in">Key features that make AjiEasy the most effective interview preparation tool</p>
             <div class="showcase-grid">
                 <div class="showcase-item fade-in">
+                    <i class="fas fa-robot showcase-icon"></i>
+                    <h3>AI-Powered Questions</h3>
+                    <p>Generate context-aware questions tailored to specific roles and companies</p>
+                </div>
+                <div class="showcase-item fade-in">
                     <i class="fas fa-bolt showcase-icon"></i>
-                    <h3>Lightning Fast</h3>
-                    <p>Generate questions in seconds with our optimized AI engine</p>
+                    <h3>Instant Generation</h3>
+                    <p>Get relevant interview questions in seconds, not hours</p>
                 </div>
                 <div class="showcase-item fade-in">
-                    <i class="fas fa-shield-alt showcase-icon"></i>
-                    <h3>Always Secure</h3>
-                    <p>Your data and progress are protected with enterprise-grade security</p>
+                    <i class="fas fa-chart-bar showcase-icon"></i>
+                    <h3>Progress Analytics</h3>
+                    <p>Track your improvement with detailed performance metrics</p>
                 </div>
                 <div class="showcase-item fade-in">
-                    <i class="fas fa-sync-alt showcase-icon"></i>
-                    <h3>Continuous Updates</h3>
-                    <p>Regular feature updates and question database expansions</p>
-                </div>
-                <div class="showcase-item fade-in">
-                    <i class="fas fa-users showcase-icon"></i>
-                    <h3>Community Driven</h3>
-                    <p>Learn from a growing community of successful candidates</p>
+                    <i class="fas fa-mobile-alt showcase-icon"></i>
+                    <h3>Mobile First</h3>
+                    <p>Practice anywhere with our fully responsive design</p>
                 </div>
             </div>
         </div>
@@ -797,9 +787,9 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="cta-content">
-            <h2 class="fade-in">Ready to See It For Yourself?</h2>
-            <p class="fade-in">Join thousands of successful candidates who have transformed their interview preparation
-                with AjiEasy's powerful platform.</p>
+            <h2 class="fade-in">Ready to Transform Your Interview Skills?</h2>
+            <p class="fade-in">Join thousands of successful candidates who have aced their interviews with AjiEasy's
+                powerful platform</p>
             <a href="register.html" class="btn-cta fade-in">
                 <i class="fas fa-play-circle"></i>
                 Start Your Journey Today
@@ -816,8 +806,8 @@
                     AjiEasy
                 </div>
                 <p class="footer-about">
-                    Transforming interview preparation through AI innovation. Explore our gallery to see how we're
-                    revolutionizing career success.
+                    Transforming interview preparation through AI innovation. See our platform in action and join the
+                    revolution in career success.
                 </p>
             </div>
             <div class="footer-links">
@@ -854,33 +844,43 @@
                 navbar.classList.remove('scrolled');
             }
         });
+                // Mobile menu functionality
+                    const menuToggle = document.getElementById('menuToggle');
+                    const navMenu = document.getElementById('navMenu');
 
-        // Filter functionality
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const galleryItems = document.querySelectorAll('.gallery-item');
+                    menuToggle.addEventListener('click', function () {
+                        this.classList.toggle('active');
+                        navMenu.classList.toggle('active');
 
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all buttons
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                // Add active class to clicked button
-                button.classList.add('active');
+                        // Prevent body scroll when menu is open
+                        if (navMenu.classList.contains('active')) {
+                            document.body.style.overflow = 'hidden';
+                        } else {
+                            document.body.style.overflow = '';
+                        }
+                    });
 
-                const filter = button.getAttribute('data-filter');
+                    // Close menu when clicking on links
+                    navMenu.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', function () {
+                            menuToggle.classList.remove('active');
+                            navMenu.classList.remove('active');
+                            document.body.style.overflow = '';
+                        });
+                    });
 
-                galleryItems.forEach(item => {
-                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
+                    // Close menu when clicking outside
+                    document.addEventListener('click', function (event) {
+                        const isClickInsideNav = navMenu.contains(event.target) || menuToggle.contains(event.target);
+                        if (!isClickInsideNav && navMenu.classList.contains('active')) {
+                            menuToggle.classList.remove('active');
+                            navMenu.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
+                    });
 
         // Fade in animation on scroll
         const fadeElements = document.querySelectorAll('.fade-in');
-
         const fadeInObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {

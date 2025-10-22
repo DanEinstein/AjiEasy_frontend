@@ -69,6 +69,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            z-index: 1001;
         }
 
         .brand i {
@@ -97,11 +98,6 @@
             transform: translateY(-2px);
         }
 
-        .nav-menu a[aria-current="page"] {
-            color: var(--primary-teal);
-            background: rgba(22, 199, 154, 0.1);
-        }
-
         .nav-menu a::after {
             content: '';
             position: absolute;
@@ -121,6 +117,7 @@
         .nav-buttons {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         .btn {
@@ -161,6 +158,106 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 35px rgba(22, 199, 154, 0.4);
         }
+
+        /* Mobile Menu Button */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background: var(--primary-blue);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            transform-origin: left;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 6rem;
+                gap: 0;
+                transition: all 0.3s ease;
+                box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-menu a {
+                width: 100%;
+                padding: 1.2rem 2rem;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                transform: none;
+            }
+
+            .nav-menu a:hover {
+                transform: none;
+                background: rgba(22, 199, 154, 0.1);
+            }
+
+            .nav-menu a::after {
+                display: none;
+            }
+
+            .nav-buttons {
+                display: none;
+            }
+
+            .mobile-nav-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 2rem;
+                width: 100%;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                margin-top: auto;
+            }
+
+            .mobile-nav-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
 
         /* Hero Section */
         .hero {
@@ -542,51 +639,70 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+        /* Mobile Styles */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
 
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem 5%;
-            }
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 6rem;
+        gap: 0;
+        transition: all 0.3s ease;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+    }
 
-            .nav-menu {
-                display: none;
-            }
+    .nav-menu.active {
+        right: 0;
+    }
 
-            .hero {
-                padding: 10rem 5% 6rem;
-                min-height: 60vh;
-            }
+    .nav-menu a {
+        width: 100%;
+        padding: 1.2rem 2rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transform: none;
+    }
 
-            .hero h1 {
-                font-size: 2.5rem;
-            }
+    .nav-menu a:hover {
+        transform: none;
+        background: rgba(22, 199, 154, 0.1);
+    }
 
-            .hero p {
-                font-size: 1.2rem;
-            }
+    .nav-menu a::after {
+        display: none;
+    }
 
-            .section-title {
-                font-size: 2.2rem;
-            }
+    .nav-buttons {
+        display: none;
+    }
 
-            .mission-content h2 {
-                font-size: 2.2rem;
-            }
+    .mobile-nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 2rem;
+        width: 100%;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        margin-top: auto;
+    }
 
-            .values-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-
+    .mobile-nav-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+}
         @media (max-width: 480px) {
             .hero h1 {
                 font-size: 2rem;
@@ -630,32 +746,42 @@
             <i class="fas fa-rocket"></i>
             AjiEasy
         </a>
-        <div class="nav-menu">
+
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
             <a href="index.html">Home</a>
             <a href="about.html" aria-current="page">About</a>
             <a href="galleries.html">Gallery</a>
             <a href="contacts.html">Contact</a>
             <a href="testimonials.html">Testimonials</a>
-        </div>
-        <div class="nav-buttons">
-            <a href="login.html" class="btn btn-login">
-                <i class="fas fa-sign-in-alt"></i>
-                Log In
-            </a>
-            <a href="register.html" class="btn btn-signup">
-                <i class="fas fa-user-plus"></i>
-                Sign Up
-            </a>
+
+            <!-- Mobile Navigation Buttons -->
+            <div class="mobile-nav-buttons">
+                <a href="login.html" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Log In
+                </a>
+                <a href="register.html" class="btn btn-signup">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1 class="fade-in">Our Mission: Revolutionizing Interview Preparation</h1>
+            <h1 class="fade-in">Our Mission: Empowering Kenyan Job Seekers</h1>
             <p class="fade-in">AjiEasy was born from a simple vision: to democratize access to quality interview
-                preparation through cutting-edge AI technology. We believe every candidate deserves the opportunity to
-                showcase their true potential.</p>
+                preparation for every Kenyan graduate and professional. We believe that talent knows no boundaries, and
+                every candidate deserves the opportunity to
+                showcase their true potential in the job market.</p>
         </div>
     </section>
 
@@ -663,22 +789,23 @@
     <section class="mission">
         <div class="mission-grid">
             <div class="mission-content fade-in">
-                <h2>Bridging the Gap Between Talent and Opportunity</h2>
-                <p>In today's competitive job market, traditional interview preparation methods often fall short.
-                    Candidates face uncertainty about what to expect, while companies struggle to find the right talent.
-                    AjiEasy addresses this challenge head-on.</p>
-                <p>Our AI-powered platform generates personalized interview questions based on specific roles,
-                    companies, and industries, giving candidates the confidence and preparation they need to succeed.
-                </p>
-                <p>We combine advanced machine learning with human expertise to create a preparation experience that's
-                    both comprehensive and accessible to everyone.</p>
+                <h2>Bridging the Gap Between Kenyan Talent and Global Opportunity</h2>
+                <p>In Kenya's rapidly growing tech and business landscape, job seekers face unique challenges. From
+                    Nairobi's bustling startups to multinational corporations in Mombasa, Kisumu, and beyond, candidates
+                    need preparation that understands the local context while meeting global standards.</p>
+                <p>Our AI-powered platform generates personalized interview questions tailored to Kenya's job
+                    market—whether you're applying to Safaricom, KCB, Equity Bank, local NGOs, or international tech
+                    companies. We give Kenyan candidates the confidence and preparation needed to compete anywhere.</p>
+                <p>We combine advanced AI technology with understanding of Kenya's employment landscape to create a
+                    preparation experience that's both world-class and locally relevant. From fresh graduates at UoN,
+                    JKUAT, and Strathmore to experienced professionals looking to level up—AjiEasy is your interview
+                    preparation partner.</p>
             </div>
             <div class="mission-image fade-in">
-                <!-- Placeholder for mission image -->
-                <div
-                    style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                    <i class="fas fa-bullseye" style="font-size: 4rem; opacity: 0.7;"></i>
-                </div>
+                <!-- Image from assets folder -->
+                <img src="images/AjiEasy mission.jpg" alt="Kenyan professionals collaborating on interview preparation"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);"
+                    onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #006633, #000000, #BB0000)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<i class=\'fas fa-bullseye\' style=\'font-size: 4rem; color: white; opacity: 0.7;\'></i>';">
             </div>
         </div>
     </section>
@@ -686,60 +813,77 @@
     <!-- Values Section -->
     <section class="values">
         <h2 class="section-title fade-in">Our Core Values</h2>
-        <p class="section-subtitle fade-in">The principles that guide everything we do at AjiEasy</p>
+        <p class="section-subtitle fade-in">The Ubuntu principles that guide everything we do at AjiEasy</p>
         <div class="values-grid">
             <div class="value-card fade-in">
                 <div class="value-icon">
                     <i class="fas fa-gem"></i>
                 </div>
-                <h3>Excellence</h3>
-                <p>We strive for perfection in every aspect of our platform, from AI accuracy to user experience.
-                    Quality is never compromised.</p>
+                <h3>Excellence (Ubora)</h3>
+                <p>We strive for perfection in every aspect of our platform, from AI accuracy to user experience. Just
+                    like Kenya's world-class athletes, quality is never compromised.</p>
             </div>
             <div class="value-card fade-in">
                 <div class="value-icon">
-                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-users"></i>
                 </div>
-                <h3>Empowerment</h3>
-                <p>We believe in empowering job seekers with the tools and confidence they need to succeed in their
-                    career journeys.</p>
+                <h3>Community (Ubuntu)</h3>
+                <p>We believe in the African philosophy of Ubuntu—"I am because we are." We empower job seekers
+                    together, lifting each other up in the journey to career success.</p>
             </div>
             <div class="value-card fade-in">
                 <div class="value-icon">
                     <i class="fas fa-lightbulb"></i>
                 </div>
-                <h3>Innovation</h3>
-                <p>Continuous innovation drives us forward. We're always exploring new ways to enhance interview
-                    preparation through technology.</p>
+                <h3>Innovation (Ubunifu)</h3>
+                <p>Like Kenya's thriving Silicon Savannah, continuous innovation drives us forward. We're always
+                    exploring new ways to enhance interview preparation through technology.</p>
             </div>
         </div>
     </section>
-
     <!-- Team Section -->
     <section class="team">
-        <h2 class="section-title fade-in">Meet Our Visionaries</h2>
-        <p class="section-subtitle fade-in">The passionate team behind AjiEasy's success</p>
-        <div class="team-grid">
-            <div class="team-member fade-in">
-                <div class="member-avatar">SA</div>
-                <h3>Sarah Johnson</h3>
-                <div class="role">CEO & Founder</div>
-                <p>Former HR director with 15+ years experience in talent acquisition. Passionate about making interview
-                    preparation accessible to all.</p>
+        <div class="mission-grid">
+            <div class="mission-image fade-in">
+                <!-- Your large image - replace with your actual image path -->
+                <img src="images/Danson_AjiEasy.jpg" alt="Einstein - Founder of AjiEasy"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);"
+                    onerror="this.onerror=null; this.style.background='linear-gradient(135deg, var(--primary-blue), var(--primary-teal))'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<i class=\'fas fa-user\' style=\'font-size: 4rem; color: white; opacity: 0.7;\'></i><div style=\'text-align: center; color: white; margin-left: 1rem;\'><h3>Einstein</h3><p>Founder & Developer</p></div>';">
             </div>
-            <div class="team-member fade-in">
-                <div class="member-avatar">MD</div>
-                <h3>Michael Chen</h3>
-                <div class="role">CTO</div>
-                <p>AI and machine learning expert from Stanford. Leads our technology development and AI model training.
+            <div class="mission-content fade-in">
+                <h2>Meet The Visionary</h2>
+                <h3>Danson Githuka (Einstein)</h3>
+                <div class="role"
+                    style="color: var(--primary-teal); font-weight: 600; margin-bottom: 1.5rem; font-size: 1.3rem;">
+                    Founder
+                    & Full-Stack Developer</div>
+                <p>A passionate developer with a mission to build technology that solves real-world problems. My journey
+                    began as a self-taught programmer, which led me to specialize in creating intelligent, scalable web
+                    applications using Python and modern frontend frameworks.</p>
+                <p>I am actively expanding my knowledge through the Power Learn Project's software engineering program
+                    and
+                    the AI essentials course at Oterman's Institute. This focus on AI is driven by my passion for
+                    building
+                    smart, ethical systems that can improve lives in sectors like education, healthcare, and
+                    agriculture.
                 </p>
-            </div>
-            <div class="team-member fade-in">
-                <div class="member-avatar">EP</div>
-                <h3>Emily Parker</h3>
-                <div class="role">Head of Product</div>
-                <p>Product design specialist focused on creating intuitive user experiences that make complex technology
-                    accessible.</p>
+                <p>I am a firm believer in project-based learning and continuous self-growth, which inspired the
+                    creation of
+                    AjiEasy to democratize interview preparation for Kenyan job seekers across all industries.</p>
+                <div class="member-skills" style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                    <span
+                        style="background: var(--primary-teal); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">Python
+                        Development</span>
+                    <span
+                        style="background: var(--primary-blue); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">AI
+                        & Machine Learning</span>
+                    <span
+                        style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">Web
+                        Applications</span>
+                    <span
+                        style="background: #16c79a; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">Project-Based
+                        Learning</span>
+                </div>
             </div>
         </div>
     </section>
@@ -747,20 +891,26 @@
     <!-- Story Section -->
     <section class="story">
         <div class="story-content">
-            <h2 class="fade-in">Our Journey So Far</h2>
-            <p class="fade-in">Founded in 2023, AjiEasy started as a small project to help friends prepare for technical
-                interviews. Today, we've grown into a platform serving thousands of users worldwide, with a success rate
-                that speaks for itself.</p>
-            <p class="fade-in">Our commitment to continuous improvement and user satisfaction has driven our rapid
-                growth and industry recognition. We're proud to be at the forefront of AI-powered career development.
-            </p>
+            <h2 class="fade-in">Our Journey: From Campus to Career Success</h2>
+            <p class="fade-in">Founded in 2025 in Nairobi, AjiEasy started as a project to help university friends
+                prepare for interviews across various industries in Kenya. Today, we've grown into a platform
+                serving hundreds of Kenyan graduates and professionals, from fresh graduates at universities like
+                UON, JKUAT, Maseno, Moi, Kenyatta, Strathmore, and Mount Kenya University, to experienced professionals
+                eyeing roles in healthcare, education, finance, technology, government, and creative sectors.</p>
+            <p class="fade-in">Our commitment to understanding Kenya's diverse employment landscape—from corporate
+                offices
+                and healthcare facilities to educational institutions, manufacturing plants, and agricultural
+                enterprises
+                across Nairobi, Mombasa, Kisumu, Eldoret, and Nakuru—has driven our rapid growth. We're proud to be
+                Kenya's leading AI-powered career development platform, helping candidates ace interviews across all
+                industries and professional fields.</p>
             <div class="story-stats">
                 <div class="story-stat fade-in">
-                    <div class="story-stat-number">10K+</div>
-                    <div class="story-stat-label">Users Empowered</div>
+                    <div class="story-stat-number">50+</div>
+                    <div class="story-stat-label">Kenyans Empowered</div>
                 </div>
                 <div class="story-stat fade-in">
-                    <div class="story-stat-number">50K+</div>
+                    <div class="story-stat-number">1000+</div>
                     <div class="story-stat-label">Questions Generated</div>
                 </div>
                 <div class="story-stat fade-in">
@@ -784,8 +934,9 @@
                     AjiEasy
                 </div>
                 <p class="footer-about">
-                    Transforming interview preparation through AI innovation. Join thousands of successful candidates
-                    who've landed their dream jobs with AjiEasy.
+                    Transforming interview preparation for Kenyan job seekers through AI innovation. Join thousands of
+                    successful candidates across Kenya who've landed their dream jobs with AjiEasy—from Nairobi to
+                    Mombasa, and beyond.
                 </p>
             </div>
             <div class="footer-links">
@@ -808,7 +959,9 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 AjiEasy - AI Interview Preparation Platform. All rights reserved.</p>
+            <p>&copy; 2025 AjiEasy - Kenya's Leading AI Interview Preparation Platform. All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">🇰🇪 Proudly Kenyan | Empowering Talent
+                Across All 47 Counties</p>
         </div>
     </footer>
 
@@ -820,6 +973,40 @@
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
+            }
+        });
+        // Mobile menu functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        menuToggle.addEventListener('click', function () {
+            this.classList.toggle('active');
+            navMenu.classList.toggle('active');
+
+            // Prevent body scroll when menu is open
+            if (navMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close menu when clicking on links
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function () {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const isClickInsideNav = navMenu.contains(event.target) || menuToggle.contains(event.target);
+            if (!isClickInsideNav && navMenu.classList.contains('active')) {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
 
