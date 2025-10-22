@@ -101,18 +101,6 @@ Edit the CSS in your `index.html` file within the `<style>` tags or inline style
 
 ### Updating Content
 All content, styles, and scripts are contained in `index.html`. Simply edit the file to make changes.
-
-## 🔧 Configuration
-
-If you need to add API configurations, you can include them in a `<script>` tag in your `index.html`:
-```javascript
-const CONFIG = {
-  API_BASE_URL: 'https://api.ajieasy.com',
-  GEMINI_API_KEY: 'your-gemini-api-key',
-  GROQ_API_KEY: 'your-groq-api-key',
-  APP_VERSION: '1.0.0',
-  ENVIRONMENT: 'production' // or 'development'
-};
 ```
 
 **⚠️ Security Note**: Never commit API keys directly in your HTML file. Use environment variables or a backend proxy for sensitive keys.
@@ -131,7 +119,7 @@ const CONFIG = {
 ### Vercel (Current Hosting)
 The project is currently deployed on Vercel at:
 ```
-https://aji-easy-frontend.vercel.app/
+https://ajieasy-frontend.vercel.app/
 ```
 
 To deploy updates:
@@ -211,9 +199,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Creator**: [Your Name]
+- **Creator** Danson Githuka
 - **Project**: AjiEasy - AI Interview Preparation Platform
-- **Contact**: [your.email@example.com]
+- **Contact**: githukadanson23@gmail.com
 
 ## 🙏 Acknowledgments
 
