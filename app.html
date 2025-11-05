@@ -1535,12 +1535,25 @@
 
     <!-- App page logic -->
     <script>
-        // SECURITY: Check authentication immediately
-        if (typeof checkAuth === 'function') {
-            checkAuth();
-        } else {
-            console.warn('checkAuth function not found. Make sure auth.js is loaded.');
-        }
+                // ==================== AUTHENTICATION - FIXED VERSION ====================
+        console.log('🔐 Checking authentication...');
+
+        // Wait for page to fully load before checking auth
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('accessToken');
+            const user = localStorage.getItem('user') || localStorage.getItem('userEmail');
+
+            console.log('Token exists:', !!token, 'User exists:', !!user);
+
+            if (!token || !user) {
+                console.warn('❌ Not authenticated, redirecting to login...');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            } else {
+                console.log('✅ Authenticated, app will load normally');
+            }
+        });
 
         // API Configuration - UPDATED TO RENDER BACKEND
         const API_CONFIG = {
