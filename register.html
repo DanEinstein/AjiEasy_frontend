@@ -656,6 +656,12 @@
             }, 5000);
         }
 
+        // Debug: Check current auth state
+        console.log('🔐 Register Page - Current Auth State:');
+        console.log('Access Token:', localStorage.getItem('accessToken'));
+        console.log('User Data:', localStorage.getItem('user'));
+        console.log('User Email:', localStorage.getItem('userEmail'));
+
         // Get form and input elements
         const registerForm = document.getElementById('registerForm');
         const nameInput = document.getElementById('name');
@@ -762,19 +768,54 @@
                 const response = await registerUser(name, email, password);
 
                 if (response.id || response.email) {
-                    // Registration successful
-                    showToast('Account created successfully! Redirecting to login...', 'success');
+                    // ✅ CRITICAL FIX: Auto-login after successful registration
+                    console.log('✅ Registration successful, attempting auto-login...');
 
-                    // Clear form
-                    registerForm.reset();
-                    strengthBarFill.className = 'strength-bar-fill';
-                    strengthText.textContent = 'Enter a password';
-                    strengthText.className = 'strength-text';
+                    try {
+                        // Try to automatically log the user in
+                        const loginResponse = await loginUser(email, password);
 
-                    // Redirect to login page after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 2000);
+                        if (loginResponse.access_token) {
+                            // ✅ Save user data that app.html expects
+                            const userData = {
+                                email: email,
+                                name: name
+                            };
+
+                            // Save user data in ALL the formats that app.html checks
+                            localStorage.setItem('user', JSON.stringify(userData));
+                            localStorage.setItem('userEmail', email);
+                            localStorage.setItem('userName', name);
+                            localStorage.setItem('accessToken', loginResponse.access_token);
+
+                            console.log('✅ Auto-login successful, redirecting to app...');
+
+                            showToast('Account created successfully! Logging you in...', 'success');
+
+                            // Redirect to app after a short delay
+                            setTimeout(() => {
+                                window.location.href = 'app.html';
+                            }, 1500);
+                        } else {
+                            // Auto-login failed, redirect to login page
+                            throw new Error('Auto-login failed');
+                        }
+                    } catch (loginError) {
+                        // Auto-login failed, redirect to login page
+                        console.log('⚠️ Auto-login failed, redirecting to login page');
+                        showToast('Account created successfully! Please log in.', 'success');
+
+                        // Clear form
+                        registerForm.reset();
+                        strengthBarFill.className = 'strength-bar-fill';
+                        strengthText.textContent = 'Enter a password';
+                        strengthText.className = 'strength-text';
+
+                        // Redirect to login page after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    }
                 } else if (response.detail) {
                     // Show error message from server
                     showToast(response.detail, 'error');
