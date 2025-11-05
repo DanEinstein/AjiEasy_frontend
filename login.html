@@ -543,7 +543,7 @@
                 </label>
                 <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
             </div>
-        
+
             <div class="form-group">
                 <label for="password">
                     <i class="fas fa-lock"></i>
@@ -552,7 +552,7 @@
                 <input type="password" id="password" name="password" placeholder="Enter your password" required
                     autocomplete="current-password">
             </div>
-        
+
             <div class="form-group checkbox-group">
                 <label class="checkbox-label">
                     <input type="checkbox" id="rememberMe" name="rememberMe">
@@ -560,7 +560,7 @@
                     <span>Remember me</span>
                 </label>
             </div>
-        
+
             <button type="submit" class="btn-submit" id="submitBtn">
                 <i class="fas fa-sign-in-alt"></i>
                 Log In
@@ -614,6 +614,12 @@
             }, 5000);
         }
 
+        // Debug: Check current auth state
+        console.log('🔐 Login Page - Current Auth State:');
+        console.log('Access Token:', localStorage.getItem('accessToken'));
+        console.log('User Data:', localStorage.getItem('user'));
+        console.log('User Email:', localStorage.getItem('userEmail'));
+
         // Get form and input elements
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -666,6 +672,19 @@
                     } else {
                         localStorage.removeItem('rememberedEmail');
                     }
+
+                    // ✅ CRITICAL FIX: Save user data that app.html expects
+                    const userData = {
+                        email: email,
+                        name: email.split('@')[0] // Create a basic name from email
+                    };
+
+                    // Save user data in ALL the formats that app.html checks
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userName', userData.name);
+
+                    console.log('✅ User data saved for app.html:', userData);
 
                     // Show success message
                     showToast('Login successful! Redirecting...', 'success');
