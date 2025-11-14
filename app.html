@@ -122,7 +122,7 @@
             }
         }
 
-        /* Navbar - Simplified */
+        /* Navbar - Updated with Hamburger */
         .navbar {
             background: rgba(15, 52, 96, 0.98);
             backdrop-filter: blur(10px);
@@ -199,6 +199,59 @@
             transform: translateY(-1px);
         }
 
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        /* Mobile Sidebar */
+        .mobile-sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-sidebar-overlay.active {
+            opacity: 1;
+        }
+
         /* Main Content - Updated Layout */
         .main-content {
             flex: 1;
@@ -230,6 +283,7 @@
             height: 100%;
             border-right: 1px solid var(--border-light);
             border: none;
+            transition: transform 0.3s ease;
         }
 
         .control-panel h2 {
@@ -1004,6 +1058,8 @@
             color: var(--primary-teal);
         }
 
+        /* ==================== RESPONSIVE DESIGN ==================== */
+
         /* Enhanced Desktop Optimizations */
         @media (min-width: 1024px) {
             .app-container {
@@ -1028,7 +1084,7 @@
             }
         }
 
-        /* Enhanced Mobile Responsiveness */
+        /* Tablet and Mobile Responsiveness */
         @media (max-width: 992px) {
             .app-container {
                 grid-template-columns: 1fr;
@@ -1036,13 +1092,37 @@
             }
 
             .control-panel {
-                max-height: 400px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-light);
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 85%;
+                max-width: 400px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                border-right: 1px solid var(--border-light);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .control-panel.active {
+                left: 0;
+            }
+
+            .mobile-sidebar-overlay {
+                display: block;
+            }
+
+            .mobile-sidebar-overlay.active {
+                display: block;
+            }
+
+            .hamburger-menu {
+                display: flex;
             }
 
             .display-panel {
-                max-height: none;
+                padding: 1.5rem;
+                width: 100%;
             }
 
             .results-header {
@@ -1064,13 +1144,23 @@
             .charts-container {
                 grid-template-columns: 1fr;
             }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-right {
+                gap: 0.5rem;
+            }
+
+            .user-info span {
+                display: none;
+            }
         }
 
         @media (max-width: 768px) {
             .navbar {
                 padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
             }
 
             .brand {
@@ -1090,12 +1180,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .sidebar {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
             .results-content ol li {
                 padding: 1rem;
                 padding-left: 2.8rem;
@@ -1112,11 +1196,102 @@
             .feature-tabs {
                 flex-direction: row;
                 overflow-x: auto;
+                padding-bottom: 0.5rem;
             }
 
             .feature-tab {
                 white-space: nowrap;
                 flex-shrink: 0;
+                min-width: 120px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0.8rem;
+            }
+
+            .brand {
+                font-size: 1.2rem;
+            }
+
+            .display-panel {
+                padding: 1rem;
+            }
+
+            .initial-state {
+                padding: 2rem 1rem;
+            }
+
+            .initial-state h3 {
+                font-size: 1.5rem;
+            }
+
+            .initial-state p {
+                font-size: 0.9rem;
+            }
+
+            .results-header-left h3 {
+                font-size: 1.3rem;
+            }
+
+            .results-actions {
+                gap: 0.3rem;
+            }
+
+            .btn-action {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .toast {
+                min-width: 280px;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .control-panel {
+                width: 90%;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media (max-width: 360px) {
+            .navbar {
+                padding: 0.6rem;
+            }
+
+            .brand {
+                font-size: 1.1rem;
+            }
+
+            .display-panel {
+                padding: 0.8rem;
+            }
+
+            .feature-tab {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .btn-generate {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .input-group input,
+            .input-group select,
+            .input-group textarea {
+                padding: 0.7rem;
             }
         }
 
@@ -1145,12 +1320,22 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div class="mobile-sidebar-overlay" id="mobileOverlay"></div>
+
     <!-- Navbar -->
     <nav class="navbar">
+        <button class="hamburger-menu" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
         <a href="index.html" class="brand">
             <i class="fas fa-rocket"></i>
             AjiEasy
         </a>
+
         <div class="nav-right">
             <div class="user-info" id="userInfo">
                 <div class="user-avatar" id="userAvatar">JS</div>
@@ -1158,7 +1343,7 @@
             </div>
             <button class="btn-logout" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
-                Log Out
+                <span class="logout-text">Log Out</span>
             </button>
         </div>
     </nav>
@@ -1167,7 +1352,7 @@
     <main class="main-content">
         <div class="app-container">
             <!-- Left Column - Control Panel -->
-            <div class="control-panel">
+            <div class="control-panel" id="controlPanel">
                 <h2>
                     <i class="fas fa-brain"></i>
                     AI Interview Assistant
@@ -1535,7 +1720,41 @@
 
     <!-- App page logic -->
     <script>
-                // ==================== AUTHENTICATION - FIXED VERSION ====================
+        // ==================== HAMBURGER MENU FUNCTIONALITY ====================
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const controlPanel = document.getElementById('controlPanel');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        function toggleMobileMenu() {
+            hamburgerMenu.classList.toggle('active');
+            controlPanel.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = controlPanel.classList.contains('active') ? 'hidden' : '';
+        }
+
+        hamburgerMenu.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu when clicking on a feature tab
+        document.querySelectorAll('.feature-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        // Close mobile menu when window is resized above 992px
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                hamburgerMenu.classList.remove('active');
+                controlPanel.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ==================== AUTHENTICATION - FIXED VERSION ====================
         console.log('🔐 Checking authentication...');
 
         // Wait for page to fully load before checking auth
@@ -1630,7 +1849,7 @@
         let chatHistory = [];
 
         // Get logout button
-       const logoutButton = document.getElementById('logoutBtn');
+        const logoutButton = document.getElementById('logoutBtn');
         logoutButton.addEventListener('click', function (event) {
             event.preventDefault();
             if (typeof logoutUser === 'function') {
@@ -1645,6 +1864,7 @@
                 window.location.href = 'login.html';
             }
         });
+
         // Display user's name and avatar
         function getUserName() {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -1952,7 +2172,7 @@
         }
 
         // ==================== AUTHENTICATED REQUEST FUNCTION ====================
-       async function authenticatedRequest(endpoint, options = {}) {
+        async function authenticatedRequest(endpoint, options = {}) {
             const token = localStorage.getItem('accessToken'); // ✅ Fixed
 
             const defaultOptions = {
@@ -1995,6 +2215,7 @@
                 throw error;
             }
         }
+
         // ==================== QUIZ FUNCTIONALITY ====================
 
         // Start quiz with real data from free APIs
