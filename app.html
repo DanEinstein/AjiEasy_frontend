@@ -199,7 +199,7 @@
             transform: translateY(-1px);
         }
 
-        /* Hamburger Menu */
+        /* Hamburger Menu - Updated with X icon */
         .hamburger-menu {
             display: none;
             flex-direction: column;
@@ -211,6 +211,7 @@
             cursor: pointer;
             padding: 0;
             z-index: 1001;
+            position: relative;
         }
 
         .hamburger-menu span {
@@ -220,6 +221,7 @@
             background-color: var(--white);
             border-radius: 3px;
             transition: all 0.3s ease;
+            transform-origin: center;
         }
 
         .hamburger-menu.active span:nth-child(1) {
@@ -228,13 +230,28 @@
 
         .hamburger-menu.active span:nth-child(2) {
             opacity: 0;
+            transform: scale(0);
         }
 
         .hamburger-menu.active span:nth-child(3) {
             transform: translateY(-9px) rotate(-45deg);
         }
 
-        /* Mobile Sidebar */
+        /* Close button for mobile */
+        .mobile-close-btn {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        /* Mobile Sidebar Overlay */
         .mobile-sidebar-overlay {
             display: none;
             position: fixed;
@@ -1102,6 +1119,7 @@
                 transition: left 0.3s ease;
                 border-right: 1px solid var(--border-light);
                 box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+                overflow-y: auto;
             }
 
             .control-panel.active {
@@ -1118,6 +1136,10 @@
 
             .hamburger-menu {
                 display: flex;
+            }
+
+            .mobile-close-btn {
+                display: block;
             }
 
             .display-panel {
@@ -1155,6 +1177,20 @@
 
             .user-info span {
                 display: none;
+            }
+
+            /* Ensure feature tabs are visible and properly styled on mobile */
+            .feature-tabs {
+                flex-direction: column;
+                overflow-x: visible;
+            }
+
+            .feature-tab {
+                white-space: normal;
+                flex-shrink: 0;
+                min-width: auto;
+                text-align: left;
+                justify-content: flex-start;
             }
         }
 
@@ -1353,6 +1389,11 @@
         <div class="app-container">
             <!-- Left Column - Control Panel -->
             <div class="control-panel" id="controlPanel">
+                <!-- Add this close button -->
+                <button class="mobile-close-btn" id="mobileCloseBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+
                 <h2>
                     <i class="fas fa-brain"></i>
                     AI Interview Assistant
@@ -1724,6 +1765,7 @@
         const hamburgerMenu = document.getElementById('hamburgerMenu');
         const controlPanel = document.getElementById('controlPanel');
         const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
 
         function toggleMobileMenu() {
             hamburgerMenu.classList.toggle('active');
@@ -1732,14 +1774,22 @@
             document.body.style.overflow = controlPanel.classList.contains('active') ? 'hidden' : '';
         }
 
+        function closeMobileMenu() {
+            hamburgerMenu.classList.remove('active');
+            controlPanel.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
         hamburgerMenu.addEventListener('click', toggleMobileMenu);
-        mobileOverlay.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', closeMobileMenu);
+        mobileCloseBtn.addEventListener('click', closeMobileMenu);
 
         // Close mobile menu when clicking on a feature tab
         document.querySelectorAll('.feature-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 if (window.innerWidth <= 992) {
-                    toggleMobileMenu();
+                    closeMobileMenu();
                 }
             });
         });
@@ -1747,10 +1797,14 @@
         // Close mobile menu when window is resized above 992px
         window.addEventListener('resize', () => {
             if (window.innerWidth > 992) {
-                hamburgerMenu.classList.remove('active');
-                controlPanel.classList.remove('active');
-                mobileOverlay.classList.remove('active');
-                document.body.style.overflow = '';
+                closeMobileMenu();
+            }
+        });
+
+        // Close mobile menu when pressing Escape key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && window.innerWidth <= 992) {
+                closeMobileMenu();
             }
         });
 
