@@ -319,7 +319,7 @@
             color: var(--primary-teal);
         }
 
-        /* Feature Tabs - Modern Style */
+        /* Feature Tabs - Modern Style - UPDATED FOR MOBILE */
         .feature-tabs {
             display: flex;
             flex-direction: column;
@@ -354,6 +354,56 @@
         .feature-tab:hover:not(.active) {
             color: var(--primary-blue);
             background: rgba(15, 52, 96, 0.05);
+        }
+
+        /* Mobile Navigation Links - ADDED */
+        .mobile-nav-links {
+            display: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .mobile-nav-links h3 {
+            font-size: 1rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+            background: rgba(15, 52, 96, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--white);
+            background: var(--primary-blue);
+            box-shadow: var(--shadow);
         }
 
         /* Tab Content */
@@ -1179,13 +1229,23 @@
                 display: none;
             }
 
-            /* Ensure feature tabs are visible and properly styled on mobile */
-            .feature-tabs {
-                flex-direction: column;
-                overflow-x: visible;
+            /* Show mobile navigation links */
+            .mobile-nav-links {
+                display: block;
             }
 
-            .feature-tab {
+            /* Hide regular feature tabs on mobile */
+            .feature-tabs {
+                display: none;
+            }
+
+            /* Ensure mobile nav links are properly styled */
+            .nav-links-list {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nav-link {
                 white-space: normal;
                 flex-shrink: 0;
                 min-width: auto;
@@ -1227,18 +1287,6 @@
                 height: 1.6rem;
                 font-size: 0.8rem;
                 left: 0.8rem;
-            }
-
-            .feature-tabs {
-                flex-direction: row;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-
-            .feature-tab {
-                white-space: nowrap;
-                flex-shrink: 0;
-                min-width: 120px;
             }
 
             .footer-content {
@@ -1399,7 +1447,33 @@
                     AI Interview Assistant
                 </h2>
 
-                <!-- Feature Tabs -->
+                <!-- Mobile Navigation Links - ADDED -->
+                <div class="mobile-nav-links">
+                    <h3>
+                        <i class="fas fa-compass"></i>
+                        Navigation
+                    </h3>
+                    <div class="nav-links-list">
+                        <a href="#" class="nav-link active" data-tab="questions">
+                            <i class="fas fa-question-circle"></i>
+                            Interview Questions
+                        </a>
+                        <a href="#" class="nav-link" data-tab="quiz">
+                            <i class="fas fa-puzzle-piece"></i>
+                            Practice Quiz
+                        </a>
+                        <a href="#" class="nav-link" data-tab="chat">
+                            <i class="fas fa-comments"></i>
+                            AI Chat Assistant
+                        </a>
+                        <a href="#" class="nav-link" data-tab="analytics">
+                            <i class="fas fa-chart-bar"></i>
+                            Performance Analytics
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Feature Tabs - Hidden on mobile -->
                 <div class="feature-tabs">
                     <button class="feature-tab active" data-tab="questions">
                         <i class="fas fa-question-circle"></i>
@@ -1785,13 +1859,16 @@
         mobileOverlay.addEventListener('click', closeMobileMenu);
         mobileCloseBtn.addEventListener('click', closeMobileMenu);
 
-        // Close mobile menu when clicking on a feature tab
-        document.querySelectorAll('.feature-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                if (window.innerWidth <= 992) {
-                    closeMobileMenu();
-                }
-            });
+        // Close mobile menu when clicking on a feature tab or nav link
+        function handleNavigationClick() {
+            if (window.innerWidth <= 992) {
+                closeMobileMenu();
+            }
+        }
+
+        // Add event listeners to both feature tabs and mobile nav links
+        document.querySelectorAll('.feature-tab, .nav-link').forEach(item => {
+            item.addEventListener('click', handleNavigationClick);
         });
 
         // Close mobile menu when window is resized above 992px
@@ -1876,8 +1953,9 @@
         const toastContainer = document.getElementById('toastContainer');
         const userAvatar = document.getElementById('userAvatar');
 
-        // Feature tabs
+        // Feature tabs and mobile nav links
         const featureTabs = document.querySelectorAll('.feature-tab');
+        const navLinks = document.querySelectorAll('.nav-link');
         const tabContents = document.querySelectorAll('.tab-content');
 
         // Action buttons
@@ -1963,30 +2041,40 @@
             }, 5000);
         }
 
-        // Feature tab switching
-        featureTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
+        // Feature tab switching - UPDATED FOR BOTH DESKTOP AND MOBILE
+        function switchTab(tabId) {
+            // Update active tab for both desktop and mobile
+            featureTabs.forEach(t => t.classList.remove('active'));
+            navLinks.forEach(n => n.classList.remove('active'));
 
-                // Update active tab
-                featureTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+            // Activate the clicked tab
+            document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(item => {
+                item.classList.add('active');
+            });
 
-                // Show corresponding content
-                tabContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === `${tabId}-tab`) {
-                        content.classList.add('active');
-                    }
-                });
-
-                // Reset display panel based on tab
-                resetDisplayPanel();
-                if (tabId === 'analytics') {
-                    loadAnalyticsDashboard();
-                } else if (tabId === 'chat') {
-                    initializeChat();
+            // Show corresponding content
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
                 }
+            });
+
+            // Reset display panel based on tab
+            resetDisplayPanel();
+            if (tabId === 'analytics') {
+                loadAnalyticsDashboard();
+            } else if (tabId === 'chat') {
+                initializeChat();
+            }
+        }
+
+        // Add event listeners to both feature tabs and mobile nav links
+        document.querySelectorAll('.feature-tab, .nav-link').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = item.getAttribute('data-tab');
+                switchTab(tabId);
             });
         });
 
@@ -2424,7 +2512,7 @@
             });
 
             document.getElementById('newQuizBtn').addEventListener('click', () => {
-                document.querySelector('[data-tab="quiz"]').click();
+                switchTab('quiz');
             });
 
             // Save quiz results to analytics
