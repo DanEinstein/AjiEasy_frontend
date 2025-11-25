@@ -487,29 +487,6 @@ body {
 }
 
 .rec-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.3);
-    border-radius: 3px;
-}
-
-.rec-card {
-    min-width: 280px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: var(--transition-normal);
-    cursor: pointer;
-}
-
-.rec-card:hover {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-/* Recent Activity */
-.recent-activity {
     background: white;
     border-radius: var(--radius-2xl);
     padding: 2.5rem;
