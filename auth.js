@@ -28,10 +28,11 @@ async function loginUser(email, password) {
             // Save the access token to localStorage
             localStorage.setItem('accessToken', data.access_token);
             
-            // Optionally save user info if provided
+            // Persist user profile if backend included it
             if (data.user) {
-                localStorage.setItem('userEmail', data.user.email);
-                localStorage.setItem('userName', data.user.name);
+                saveUserData(data.user);
+            } else {
+                await fetchAndStoreCurrentUser();
             }
         }
 
@@ -150,7 +151,7 @@ async function authenticatedRequest(endpoint, options = {}) {
         ...options,
         headers: {
             ...defaultOptions.headers,
-            ...options.headers
+            ...(options.headers || {})
         }
     };
 
@@ -189,6 +190,20 @@ function getUserData() {
     return userData ? JSON.parse(userData) : null;
 }
 
+// Ensure we have the freshest profile after authentication
+async function fetchAndStoreCurrentUser() {
+    try {
+        const profile = await authenticatedRequest('/users/me');
+        if (profile) {
+            saveUserData(profile);
+        }
+        return profile;
+    } catch (error) {
+        console.error('Unable to fetch current user profile:', error);
+        return null;
+    }
+}
+
 // Check if user is logged in (without redirect)
 function isLoggedIn() {
     return !!localStorage.getItem('accessToken');
@@ -207,6 +222,7 @@ if (typeof module !== 'undefined' && module.exports) {
         authenticatedRequest,
         saveUserData,
         getUserData,
-        isLoggedIn
+        isLoggedIn,
+        fetchAndStoreCurrentUser
     };
 }

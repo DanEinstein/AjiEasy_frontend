@@ -1617,6 +1617,18 @@
             userAvatar.textContent = displayName.charAt(0).toUpperCase();
         }
 
+        async function hydrateUserProfile() {
+            if (userName || !window.fetchAndStoreCurrentUser) {
+                return;
+            }
+            const profile = await fetchAndStoreCurrentUser();
+            if (profile && profile.name) {
+                document.getElementById('userName').textContent = profile.name;
+                userAvatar.textContent = profile.name.charAt(0).toUpperCase();
+            }
+        }
+        hydrateUserProfile();
+
         // Toast notification function
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
@@ -1673,6 +1685,61 @@
             quizState.classList.remove('active');
             chatState.classList.remove('active');
             analyticsState.classList.remove('active');
+        }
+
+        function renderQuestionsList(questions) {
+            resultsContent.innerHTML = '';
+
+            if (!Array.isArray(questions) || questions.length === 0) {
+                const emptyState = document.createElement('p');
+                emptyState.textContent = 'No questions generated yet. Try a new topic!';
+                resultsContent.appendChild(emptyState);
+                return;
+            }
+
+            const list = document.createElement('ol');
+            questions.forEach(questionObj => {
+                if (!questionObj || !questionObj.question) {
+                    return;
+                }
+
+                const item = document.createElement('li');
+                const meta = document.createElement('strong');
+                const type = questionObj.type || 'general';
+                const difficulty = questionObj.difficulty || 'medium';
+                meta.textContent = `(${type}, ${difficulty})`;
+                item.appendChild(meta);
+                item.appendChild(document.createTextNode(` - ${questionObj.question}`));
+                list.appendChild(item);
+            });
+
+            resultsContent.appendChild(list);
+        }
+
+        function renderRecommendationItems(items) {
+            const container = document.getElementById('recommendationsList');
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = '';
+            const list = Array.isArray(items) && items.length > 0
+                ? items
+                : ['Keep practicing to unlock personalized AI insights.'];
+
+            list.forEach(text => {
+                if (typeof text !== 'string') {
+                    return;
+                }
+                const card = document.createElement('div');
+                card.style.padding = '0.8rem';
+                card.style.background = 'var(--light-bg)';
+                card.style.borderRadius = '8px';
+                card.style.marginBottom = '0.5rem';
+                card.style.borderLeft = '4px solid var(--primary-teal)';
+                card.textContent = text;
+                container.appendChild(card);
+            });
         }
 
         // Load saved form values
@@ -2326,12 +2393,65 @@
         // ==================== ANALYTICS FUNCTIONALITY ====================
 
         // Enhanced analytics with real data
-        function loadAnalyticsDashboard() {
-            // Get real data from localStorage and backend
+        async function loadAnalyticsDashboard() {
+            try {
+                const analyticsData = await authenticatedRequest('/analytics/?period=30');
+                renderServerAnalytics(analyticsData);
+            } catch (error) {
+                console.warn('Analytics fetch failed, using local insights:', error);
+                renderLocalAnalytics();
+            }
+        }
+
+        function renderServerAnalytics(data) {
+            const performanceTrend = data.performance_trend || [];
+            const topicMastery = data.topic_mastery || {};
+            const averageScore = data.average_score || 0;
+            const totalQuestions = data.total_questions_attempted || 0;
+
+            analyticsPeriodBadge.textContent = data.period || 'last_30_days';
+
+            analyticsDashboard.innerHTML = `
+                <div class="analytics-header">
+                    <h4>Your Learning Progress</h4>
+                    <div class="summary-stats" style="display: flex; gap: 1rem; font-size: 0.9rem;">
+                        <div style="background: var(--success); color: white; padding: 0.3rem 0.8rem; border-radius: 10px;">
+                            Avg Score: ${Math.round(averageScore)}%
+                        </div>
+                        <div style="background: var(--primary-blue); color: white; padding: 0.3rem 0.8rem; border-radius: 10px;">
+                            Questions: ${totalQuestions}
+                        </div>
+                        <div style="background: var(--primary-teal); color: white; padding: 0.3rem 0.8rem; border-radius: 10px;">
+                            Insights: Powered by Gemini
+                        </div>
+                    </div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <div class="chart-title">Performance Trend</div>
+                        <canvas id="performanceChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div class="chart-title">Topic Mastery</div>
+                        <canvas id="topicsChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="recommendations-section" style="margin-top: 1.5rem;">
+                    <h5 style="color: var(--primary-blue); margin-bottom: 1rem;">
+                        <i class="fas fa-bullseye"></i> AI Recommendations
+                    </h5>
+                    <div class="recommendations-list" id="recommendationsList"></div>
+                </div>
+            `;
+
+            renderRecommendationItems(data.recommendations);
+            initializeCharts(performanceTrend, topicMastery);
+        }
+
+        function renderLocalAnalytics() {
             const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizResults') || '[]');
             const questionHistory = JSON.parse(localStorage.getItem('questionHistory') || '[]');
 
-            // Calculate real analytics
             const totalQuizzes = savedQuizzes.length;
             const averageScore = totalQuizzes > 0
                 ? savedQuizzes.reduce((sum, quiz) => sum + quiz.percentage, 0) / totalQuizzes
@@ -2351,8 +2471,9 @@
                 topicMastery[topic] = Math.round(topicPerformance[topic].total / topicPerformance[topic].count);
             });
 
-            // Generate performance trend (last 7 days)
             const performanceTrend = generatePerformanceTrend(savedQuizzes);
+
+            analyticsPeriodBadge.textContent = 'local history';
 
             analyticsDashboard.innerHTML = `
                 <div class="analytics-header">
@@ -2381,19 +2502,13 @@
                 </div>
                 <div class="recommendations-section" style="margin-top: 1.5rem;">
                     <h5 style="color: var(--primary-blue); margin-bottom: 1rem;">
-                        <i class="fas fa-bullseye"></i> AI Recommendations
+                        <i class="fas fa-bullseye"></i> Practice Suggestions
                     </h5>
-                    <div class="recommendations-list">
-                        ${generateRecommendations(topicMastery, averageScore).map(rec => `
-                            <div style="padding: 0.8rem; background: var(--light-bg); border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid var(--primary-teal);">
-                                ${rec}
-                            </div>
-                        `).join('')}
-                    </div>
+                    <div class="recommendations-list" id="recommendationsList"></div>
                 </div>
             `;
 
-            // Initialize charts with real data
+            renderRecommendationItems(generateRecommendations(topicMastery, averageScore));
             initializeCharts(performanceTrend, topicMastery);
         }
 
@@ -2636,16 +2751,7 @@
 
                 topicBadge.textContent = topic;
 
-                // Build questions HTML
-                let questionsHTML = '<ol>';
-                questions.forEach((questionObj, index) => {
-                    if (questionObj && questionObj.question) {
-                        questionsHTML += `<li><strong>(${questionObj.type || 'general'}, ${questionObj.difficulty || 'medium'})</strong> - ${questionObj.question}</li>`;
-                    }
-                });
-                questionsHTML += '</ol>';
-
-                resultsContent.innerHTML = questionsHTML;
+                renderQuestionsList(questions);
                 resultsState.classList.add('active');
 
                 // Re-enable form
@@ -2678,14 +2784,7 @@
                 currentInterviewType = interviewType;
                 currentCompanyNature = companyNature;
 
-                // Build and display questions
-                let questionsHTML = '<ol>';
-                localQuestions.forEach((questionObj, index) => {
-                    questionsHTML += `<li><strong>(${questionObj.type}, ${questionObj.difficulty})</strong> - ${questionObj.question}</li>`;
-                });
-                questionsHTML += '</ol>';
-
-                resultsContent.innerHTML = questionsHTML;
+                renderQuestionsList(localQuestions);
                 loadingState.classList.add('hidden');
                 resultsState.classList.add('active');
                 topicBadge.textContent = topic;
