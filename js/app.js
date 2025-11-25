@@ -252,3 +252,30 @@ function saveToHistory(topic, jobDesc, type, company) {
     localStorage.setItem('questionHistory', JSON.stringify(history.slice(0, 10)));
     loadDashboardHistory();
 }
+
+// Load Recommendations (Mock Data for now)
+function loadRecommendations() {
+    const container = document.getElementById('recommendationsList');
+    if (!container) return;
+
+    // Simulate API fetch
+    setTimeout(() => {
+        const trends = [
+            { title: 'React 19 Features', icon: 'fa-react', color: '#61dafb' },
+            { title: 'AI Engineering', icon: 'fa-robot', color: '#16c79a' },
+            { title: 'System Design', icon: 'fa-sitemap', color: '#667eea' },
+            { title: 'Cloud Architecture', icon: 'fa-cloud', color: '#0f3460' },
+            { title: 'Cybersecurity', icon: 'fa-shield-alt', color: '#e53e3e' }
+        ];
+
+        container.innerHTML = trends.map(trend => `
+            <div class="rec-card" style="border-left: 4px solid ${trend.color}">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${trend.color}">
+                    <i class="fab ${trend.icon} fas"></i>
+                </div>
+                <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${trend.title}</h4>
+                <p style="font-size: 0.8rem; opacity: 0.8;">Trending now</p>
+            </div>
+        `).join('');
+    }, 1000);
+}

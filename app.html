@@ -82,24 +82,26 @@
 
             <!-- Dashboard View -->
             <div id="dashboardView" class="view-section active dashboard-view">
-                <div class="welcome-header">
+                <div class="welcome-header fade-in">
                     <h1 id="welcomeMessage">Welcome back!</h1>
                     <p>Ready to ace your next interview? Choose an activity below to get started.</p>
                 </div>
 
                 <!-- Trending Recommendations (Gemini Powered) -->
-                <div class="recommendations-section">
-                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.2rem;">
-                        <i class="fas fa-bolt"></i> Trending in 2025
+                <div class="recommendations-section fade-in" style="animation-delay: 0.1s;">
+                    <h2 class="text-gradient" style="margin-bottom: 1.5rem; font-size: 1.5rem;">
+                        <i class="fas fa-bolt" style="color: var(--warning);"></i> Trending in 2025
                     </h2>
                     <div class="rec-scroll" id="recommendationsList">
-                        <div class="rec-card">Loading trends...</div>
+                        <div class="rec-card">
+                            <i class="fas fa-spinner fa-spin"></i> Loading trends...
+                        </div>
                     </div>
                 </div>
 
-                <div class="dashboard-grid">
+                <div class="dashboard-grid fade-in" style="animation-delay: 0.2s;">
                     <div class="action-card" data-view="questions">
-                        <div class="card-icon">
+                        <div class="card-icon icon-blue">
                             <i class="fas fa-magic"></i>
                         </div>
                         <h3>Generate Questions</h3>
@@ -107,7 +109,7 @@
                     </div>
 
                     <div class="action-card" data-view="quiz">
-                        <div class="card-icon">
+                        <div class="card-icon icon-teal">
                             <i class="fas fa-check-double"></i>
                         </div>
                         <h3>Take a Quiz</h3>
@@ -115,7 +117,7 @@
                     </div>
 
                     <div class="action-card" data-view="chat">
-                        <div class="card-icon">
+                        <div class="card-icon icon-purple">
                             <i class="fas fa-robot"></i>
                         </div>
                         <h3>AI Chat Coach</h3>
@@ -123,13 +125,19 @@
                     </div>
                 </div>
 
-                <div class="recent-activity">
+                <div class="recent-activity fade-in" style="animation-delay: 0.3s;">
                     <div class="section-header">
                         <h2>Recent Activity</h2>
                     </div>
                     <div class="activity-list" id="recentActivityList">
                         <!-- Populated by JS -->
-                        <div class="activity-item">Loading activity...</div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fas fa-history"></i></div>
+                            <div class="activity-details">
+                                <div class="activity-title">No recent activity</div>
+                                <div class="activity-meta">Start practicing to see your history here</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
