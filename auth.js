@@ -56,20 +56,11 @@ async function loginUser(email, password) {
             localStorage.setItem(window.CONFIG.TOKEN_KEY, data.access_token);
             // Also save as 'accessToken' for backward compatibility if needed
             localStorage.setItem('accessToken', data.access_token);
-<<<<<<< HEAD
-            
-            // Persist user profile if backend included it
-            if (data.user) {
-                saveUserData(data.user);
-            } else {
-                await fetchAndStoreCurrentUser();
-=======
 
             if (data.user) {
                 localStorage.setItem(window.CONFIG.USER_KEY, JSON.stringify(data.user));
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('userName', data.user.name);
->>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b
             }
         } else {
             showError(data.detail || 'Login failed');
@@ -200,58 +191,6 @@ async function authenticatedRequest(endpoint, options = {}) {
     }
 }
 
-<<<<<<< HEAD
-// Enhanced user data management for better compatibility
-function saveUserData(userData) {
-    if (userData) {
-        localStorage.setItem('user', JSON.stringify(userData));
-        if (userData.email) localStorage.setItem('userEmail', userData.email);
-        if (userData.name) localStorage.setItem('userName', userData.name);
-    }
-}
-
-function getUserData() {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
-}
-
-// Ensure we have the freshest profile after authentication
-async function fetchAndStoreCurrentUser() {
-    try {
-        const profile = await authenticatedRequest('/users/me');
-        if (profile) {
-            saveUserData(profile);
-        }
-        return profile;
-    } catch (error) {
-        console.error('Unable to fetch current user profile:', error);
-        return null;
-    }
-}
-
-// Check if user is logged in (without redirect)
-function isLoggedIn() {
-    return !!localStorage.getItem('accessToken');
-}
-
-// Export functions for use in other modules (if using modules)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        loginUser,
-        registerUser,
-        logoutUser,
-        checkAuth,
-        getToken,
-        getUserEmail,
-        getUserName,
-        authenticatedRequest,
-        saveUserData,
-        getUserData,
-        isLoggedIn,
-        fetchAndStoreCurrentUser
-    };
-}
-=======
 // Export functions
 window.auth = {
     loginUser,
@@ -262,4 +201,4 @@ window.auth = {
     authenticatedRequest,
     showError
 };
->>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b
+
