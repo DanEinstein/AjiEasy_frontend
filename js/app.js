@@ -179,47 +179,254 @@ function loadDashboardHistory() {
     `).join('');
 }
 
-// Form Handlers
-const topicForm = document.getElementById('topicForm');
-if (topicForm) {
-    topicForm.addEventListener('submit', async (e) => {
+// --- QUIZ LOGIC ---
+const quizForm = document.getElementById('quizForm');
+if (quizForm) {
+    quizForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(topicForm);
+        const formData = new FormData(quizForm);
         const data = Object.fromEntries(formData.entries());
 
-        toggleLoading(true, 'Generating Interview Questions...');
+        toggleLoading(true, 'Generating Quiz...');
+        document.getElementById('quizSetup').classList.add('hidden');
 
         try {
-            // Simulate API call or use real one
-            // For now, using the local fallback generator logic from original app
-            await new Promise(r => setTimeout(r, 1500)); // Fake delay
+            const token = localStorage.getItem('accessToken');
+            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.generateQuiz}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    topic: data.topic,
+                    difficulty: data.difficulty,
+                    question_count: 10
+                })
+            });
 
-            const questions = generateLocalQuestions(data.topic, data.jobDescription, data.interviewType, data.companyNature);
-            displayQuestions(questions);
+            if (!response.ok) throw new Error('Failed to generate quiz');
 
-            // Save to history
-            saveToHistory(data.topic, data.jobDescription, data.interviewType, data.companyNature);
+            const result = await response.json();
+            state.quiz = result.questions || result; // Handle different response structures
+            startQuiz(state.quiz);
 
         } catch (error) {
             console.error(error);
-            showToast('Failed to generate questions', 'error');
+            showToast('Failed to generate quiz', 'error');
+            document.getElementById('quizSetup').classList.remove('hidden');
         } finally {
             toggleLoading(false);
         }
     });
 }
 
-function displayQuestions(questions) {
-    const container = document.getElementById('questionsResults');
-    container.innerHTML = questions.map((q, i) => `
-        <div class="result-card">
-            <h4>${i + 1}. ${q.question}</h4>
-            <p class="text-muted small mt-2">${q.explanation}</p>
-        </div>
-    `).join('');
-    container.style.display = 'block';
+let currentQuestionIndex = 0;
+let quizScore = 0;
+
+function startQuiz(questions) {
+    currentQuestionIndex = 0;
+    quizScore = 0;
+    document.getElementById('quizInterface').classList.remove('hidden');
+    document.getElementById('quizResults').classList.add('hidden');
+    showQuestion(0);
 }
 
+function showQuestion(index) {
+    const question = state.quiz[index];
+    const container = document.getElementById('quizQuestionContainer');
+    const progressText = document.getElementById('quizProgressText');
+    const progressBar = document.getElementById('quizProgressBar');
+
+    // Update Progress
+    progressText.textContent = `Question ${index + 1} of ${state.quiz.length}`;
+    progressBar.style.width = `${((index + 1) / state.quiz.length) * 100}%`;
+
+    // Render Question
+    container.innerHTML = `
+        <div class="question-card fade-in">
+            <h3>${question.question}</h3>
+            <div class="options-grid">
+                ${question.options.map((opt, i) => `
+                    <button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>
+                `).join('')}
+            </div>
+            <div id="feedbackArea" class="mt-3 hidden"></div>
+        </div>
+    `;
+
+    document.getElementById('nextQuestionBtn').classList.add('hidden');
+}
+
+window.checkAnswer = function(selectedIndex) {
+    const question = state.quiz[currentQuestionIndex];
+    const feedback = document.getElementById('feedbackArea');
+    const buttons = document.querySelectorAll('.option-btn');
+
+    // Disable all buttons
+    buttons.forEach(btn => btn.disabled = true);
+
+    if (selectedIndex === question.correctAnswer) {
+        quizScore++;
+        feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${question.explanation}</div>`;
+        buttons[selectedIndex].classList.add('correct');
+    } else {
+        feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${question.options[question.correctAnswer]}. ${question.explanation}</div>`;
+        buttons[selectedIndex].classList.add('wrong');
+        buttons[question.correctAnswer].classList.add('correct');
+    }
+
+    feedback.classList.remove('hidden');
+
+    // Show Next or Finish button
+    if (currentQuestionIndex < state.quiz.length - 1) {
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        nextBtn.classList.remove('hidden');
+        nextBtn.onclick = () => {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        };
+    } else {
+        const finishBtn = document.getElementById('finishQuizBtn');
+        finishBtn.classList.remove('hidden');
+        finishBtn.onclick = finishQuiz;
+    }
+};
+
+function finishQuiz() {
+    document.getElementById('quizInterface').classList.add('hidden');
+    document.getElementById('quizResults').classList.remove('hidden');
+
+    const percentage = Math.round((quizScore / state.quiz.length) * 100);
+    document.getElementById('finalScore').textContent = percentage;
+
+    let message = "Keep practicing!";
+    if (percentage >= 80) message = "Outstanding performance! 🏆";
+    else if (percentage >= 60) message = "Good job! You're getting there. 👍";
+
+    document.getElementById('scoreMessage').textContent = message;
+}
+
+// --- CHAT LOGIC ---
+const chatForm = document.getElementById('chatForm');
+if (chatForm) {
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (!message) return;
+
+        // Add User Message
+        appendMessage('user', message);
+        input.value = '';
+
+        // Add Loading Message
+        const loadingId = appendMessage('ai', 'Thinking...', true);
+
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.chat}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    topic: "General Interview Prep", // Default context
+                    message: message,
+                    history: state.chatHistory
+                })
+            });
+
+            const data = await response.json();
+
+            // Remove loading, add AI response
+            document.getElementById(loadingId).remove();
+            appendMessage('ai', data.response || data.message);
+
+            // Update History
+            state.chatHistory.push({ role: 'user', content: message });
+            state.chatHistory.push({ role: 'assistant', content: data.response });
+
+        } catch (error) {
+            document.getElementById(loadingId).remove();
+            appendMessage('ai', 'Sorry, I encountered an error. Please try again.');
+        }
+    });
+}
+
+function appendMessage(role, text, isLoading = false) {
+    const container = document.getElementById('chatMessages');
+    const id = 'msg-' + Date.now();
+
+    const div = document.createElement('div');
+    div.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+    div.id = id;
+
+    div.innerHTML = `
+        <div class="message-avatar"><i class="fas ${role === 'user' ? 'fa-user' : 'fa-robot'}"></i></div>
+        <div class="message-content">${text}</div>
+    `;
+
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return id;
+}
+
+// --- ANALYTICS LOGIC ---
+const refreshAnalyticsBtn = document.getElementById('refreshAnalytics');
+if (refreshAnalyticsBtn) {
+    refreshAnalyticsBtn.addEventListener('click', loadAnalytics);
+}
+
+// Load Analytics when view is switched
+document.querySelectorAll('.nav-link[data-view="analytics"]').forEach(btn => {
+    btn.addEventListener('click', loadAnalytics);
+});
+
+async function loadAnalytics() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.analytics}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({}) // Send empty body or user stats if needed
+        });
+
+        const data = await response.json();
+
+        // Update Stats
+        document.getElementById('statQuestions').textContent = data.questions_generated || 0;
+        document.getElementById('statQuizScore').textContent = (data.average_score || 0) + '%';
+        document.getElementById('statStreak').textContent = data.streak_days || 0;
+
+        // Simple Chart Visualization (CSS based)
+        const chartContainer = document.getElementById('topicMasteryChart');
+        if (data.topic_mastery) {
+            chartContainer.innerHTML = Object.entries(data.topic_mastery).map(([topic, score]) => `
+                <div style="margin-bottom: 10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;">
+                        <span>${topic}</span>
+                        <span>${score}%</span>
+                    </div>
+                    <div style="background:#eee; height:8px; border-radius:4px; overflow:hidden;">
+                        <div style="background:var(--primary-blue); height:100%; width:${score}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    } catch (error) {
+        console.error("Analytics load error", error);
+    }
+}
+
+// --- EXISTING HELPERS ---
 // Helper: Toast Notification
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -232,17 +439,6 @@ function showToast(message, type = 'success') {
     `;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 5000);
-}
-
-// Helper: Local Question Generator (Fallback)
-function generateLocalQuestions(topic, jobDesc, type, company) {
-    return [
-        { question: `Can you explain your experience with ${topic}?`, explanation: "Standard opening question." },
-        { question: `How would you handle a difficult situation involving ${topic}?`, explanation: "Behavioral question." },
-        { question: `What are the key challenges in ${topic} for a ${company}?`, explanation: "Industry specific question." },
-        { question: `Describe a project where you used ${topic}.`, explanation: "Portfolio question." },
-        { question: `How do you stay updated with ${topic} trends?`, explanation: "Continuous learning question." }
-    ];
 }
 
 // Helper: Save History

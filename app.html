@@ -188,28 +188,119 @@
                 </div>
             </div>
 
-            <!-- Quiz View (Placeholder) -->
+            <!-- Quiz View -->
             <div id="quizView" class="view-section">
                 <div class="section-header">
                     <h2>Practice Quiz</h2>
                 </div>
-                <p>Quiz feature coming soon...</p>
+
+                <div id="quizSetup" class="fade-in">
+                    <form id="quizForm">
+                        <div class="input-group">
+                            <label>Topic</label>
+                            <input type="text" name="topic" placeholder="e.g. Python, System Design" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Difficulty</label>
+                            <select name="difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-play"></i> Start Quiz
+                        </button>
+                    </form>
+                </div>
+
+                <div id="quizInterface" class="hidden fade-in">
+                    <div class="quiz-progress">
+                        <span id="quizProgressText">Question 1 of 10</span>
+                        <div class="progress-bar"><div class="progress-fill" id="quizProgressBar" style="width: 10%"></div></div>
+                    </div>
+
+                    <div id="quizQuestionContainer">
+                        <!-- Questions injected here -->
+                    </div>
+
+                    <div class="quiz-controls">
+                        <button id="nextQuestionBtn" class="btn-secondary hidden">Next Question</button>
+                        <button id="finishQuizBtn" class="btn-primary hidden">Finish Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quizResults" class="hidden fade-in">
+                    <div class="score-card">
+                        <h3>Quiz Complete!</h3>
+                        <div class="score-display">
+                            <span id="finalScore">80</span>%
+                        </div>
+                        <p id="scoreMessage">Great job!</p>
+                        <button class="btn-primary" onclick="location.reload()">Take Another Quiz</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Chat View (Placeholder) -->
+            <!-- Chat View -->
             <div id="chatView" class="view-section">
                 <div class="section-header">
-                    <h2>AI Chat Assistant</h2>
+                    <h2>AI Chat Coach</h2>
                 </div>
-                <p>Chat feature coming soon...</p>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                Hello! I'm your AI Interview Coach. I can help you practice answers, review your resume, or discuss technical topics. What would you like to work on?
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="chat-input-area" id="chatForm">
+                        <input type="text" id="chatInput" placeholder="Type your message..." required autocomplete="off">
+                        <button type="submit" class="btn-send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <!-- Analytics View (Placeholder) -->
+            <!-- Analytics View -->
             <div id="analyticsView" class="view-section">
                 <div class="section-header">
                     <h2>Performance Analytics</h2>
+                    <button class="btn-secondary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh</button>
                 </div>
-                <p>Analytics feature coming soon...</p>
+
+                <div class="analytics-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="statQuestions">0</div>
+                        <div class="stat-label">Questions Generated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-teal"><i class="fas fa-star"></i></div>
+                        <div class="stat-value" id="statQuizScore">0%</div>
+                        <div class="stat-label">Avg Quiz Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fas fa-fire"></i></div>
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+
+                <div class="analytics-charts">
+                    <div class="chart-container">
+                        <h3>Topic Mastery</h3>
+                        <div id="topicMasteryChart" class="chart-placeholder">
+                            <!-- Simple CSS Bar Chart injected here -->
+                            <p class="text-muted">Complete quizzes to see data</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </main>
