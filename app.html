@@ -87,9 +87,19 @@
                     <p>Ready to ace your next interview? Choose an activity below to get started.</p>
                 </div>
 
+                <!-- Trending Recommendations (Gemini Powered) -->
+                <div class="recommendations-section">
+                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.2rem;">
+                        <i class="fas fa-bolt"></i> Trending in 2025
+                    </h2>
+                    <div class="rec-scroll" id="recommendationsList">
+                        <div class="rec-card">Loading trends...</div>
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="action-card" data-view="questions">
-                        <div class="card-icon icon-blue">
+                        <div class="card-icon">
                             <i class="fas fa-magic"></i>
                         </div>
                         <h3>Generate Questions</h3>
@@ -97,7 +107,7 @@
                     </div>
 
                     <div class="action-card" data-view="quiz">
-                        <div class="card-icon icon-teal">
+                        <div class="card-icon">
                             <i class="fas fa-check-double"></i>
                         </div>
                         <h3>Take a Quiz</h3>
@@ -105,7 +115,7 @@
                     </div>
 
                     <div class="action-card" data-view="chat">
-                        <div class="card-icon icon-purple">
+                        <div class="card-icon">
                             <i class="fas fa-robot"></i>
                         </div>
                         <h3>AI Chat Coach</h3>
@@ -197,6 +207,8 @@
         </main>
     </div>
 
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
     <script src="auth.js"></script>
     <script src="js/app.js"></script>
 </body>

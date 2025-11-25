@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNavigation();
     loadUserData();
     loadDashboardHistory();
+    loadRecommendations();
 });
 
 // Authentication Check

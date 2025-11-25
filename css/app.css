@@ -10,29 +10,6 @@
     --text-light: #666666;
     --border-light: #e0e0e0;
     --success: #16c79a;
-    --error: #dc3545;
-    --warning: #ffc107;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-    --sidebar-width: 280px;
-    --radius-md: 12px;
-    --radius-lg: 20px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    color: var(--text-dark);
-    line-height: 1.6;
-    background-color: #f0f2f5;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 /* Toast Notifications */
