@@ -463,12 +463,11 @@ async function loadAnalytics() {
 
     try {
         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.analytics}`, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({}) // Send empty body or user stats if needed
+            }
         });
 
         const data = await response.json();
@@ -657,13 +656,13 @@ async function loadAnalytics() {
     if (!token) return;
 
     try {
+        // Changed to GET request to match backend
         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.analytics}`, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({}) // Send empty body or user stats if needed
+            }
         });
 
         const data = await response.json();
@@ -714,28 +713,6 @@ function saveToHistory(topic, jobDesc, type, company) {
     const history = JSON.parse(localStorage.getItem('questionHistory') || '[]');
     history.unshift({ topic, jobDesc, interviewType: type, companyNature: company, date: new Date().toISOString() });
     localStorage.setItem('questionHistory', JSON.stringify(history.slice(0, 10)));
-    loadDashboardHistory();
-}
-
-// Load Recommendations from Backend
-async function loadRecommendations() {
-    const container = document.getElementById('recommendationsScroll');
-    if (!container) return;
-
-    try {
-        const token = localStorage.getItem('accessToken');
-        const response = await fetch(`${API_CONFIG.baseURL}/recommendations`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (response.ok) {
-            const recommendations = await response.json();
-            container.innerHTML = recommendations.map(rec => `
-                <div class="rec-card" style="border-left: 4px solid ${rec.color || '#16c79a'}">
-                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${rec.color || '#16c79a'}">
-                        <i class="fas ${rec.icon || 'fa-star'}"></i>
                     </div>
                     <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${rec.topic}</h4>
                     <p style="font-size: 0.8rem; opacity: 0.8;">${rec.trend}</p>
