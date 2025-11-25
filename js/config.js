@@ -10,7 +10,9 @@ const CONFIG = {
         ANALYTICS: '/analytics/',
         RECOMMENDATIONS: '/recommendations/',
         HEALTH: '/health'
-    }
+    },
+    TOKEN_KEY: "aji_token",
+    USER_KEY: "aji_user"
 };
 
 // Export for use in other files

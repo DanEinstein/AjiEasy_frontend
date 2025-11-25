@@ -14,7 +14,7 @@ if (!window.CONFIG || !window.CONFIG.API_URL) {
 
 // UNIVERSAL FETCH WITH TOKEN — USE THIS EVERYWHERE
 async function apiFetch(endpoint, options = {}) {
-    const token = localStorage.getItem("aji_token") || localStorage.getItem("accessToken");
+    const token = localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem("accessToken");
 
     const headers = {
         "Content-Type": "application/json",
@@ -29,9 +29,9 @@ async function apiFetch(endpoint, options = {}) {
 
     if (response.status === 401) {
         alert("Session expired. Please login again.");
-        localStorage.removeItem("aji_token");
+        localStorage.removeItem(window.CONFIG.TOKEN_KEY);
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("aji_user");
+        localStorage.removeItem(window.CONFIG.USER_KEY);
         localStorage.removeItem("user");
         window.location.href = "login.html";
         return;
