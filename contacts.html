@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External CSS temporarily disabled -->
+    <!-- <link rel="stylesheet" href="css/pages.css"> -->
+    <!-- <link rel="stylesheet" href="css/pages-ext.css"> -->
     <style>
         :root {
             --primary-blue: #0f3460;
@@ -258,15 +261,17 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(22, 199, 154, 0.8));
-            color: white;
-            padding: 12rem 5% 6rem;
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
+    background:
+        linear-gradient(135deg, rgba(15, 52, 96, 0.7) 0%, rgba(26, 26, 46, 0.8) 100%),
+        url('https://images.pexels.com/photos/9487235/pexels-photo-9487235.jpeg') center/cover;
+    color: white;
+    padding: 12rem 5% 8rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
 
         .hero-content {
             max-width: 1200px;
@@ -741,20 +746,20 @@
             <i class="fas fa-rocket"></i>
             AjiEasy
         </a>
-    
+
         <button class="menu-toggle" id="menuToggle">
             <span></span>
             <span></span>
             <span></span>
         </button>
-    
+
         <div class="nav-menu" id="navMenu">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="galleries.html">Gallery</a>
             <a href="contacts.html">Contact</a>
             <a href="testimonials.html">Testimonials</a>
-    
+
             <!-- Mobile Navigation Buttons -->
             <div class="mobile-nav-buttons">
                 <a href="login.html" class="btn btn-login">
@@ -774,7 +779,7 @@
         <div class="hero-content">
             <h1 class="fade-in">Let's Connect & Grow Together</h1>
             <p class="fade-in">As a Maseno University student building innovative solutions, I'd love to hear your
-                feedback, answer your questions, or collaborate on making AjiEven better.</p>
+                feedback, answer your questions, or collaborate on making AjiEasy even better.</p>
         </div>
     </section>
 

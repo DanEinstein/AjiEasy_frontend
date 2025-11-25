@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AjiEasy - AI-Powered Interview Preparation Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        window.CONFIG = {
+            API_URL: "https://ajieasy-backend.onrender.com",
+            TOKEN_KEY: "aji_token",
+            USER_KEY: "aji_user"
+        };
+    </script>
+    <!-- External CSS temporarily disabled - using inline styles -->
+    <!-- <link rel="stylesheet" href="css/pages.css"> -->
+    <!-- <link rel="stylesheet" href="css/pages-ext.css"> -->
     <style>
         :root {
             --primary-blue: #0f3460;
@@ -257,17 +265,19 @@
             }
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
-            color: white;
-            padding: 12rem 5% 8rem;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Hero Section - Updated with Background Image */
+           .hero {
+    background:
+        linear-gradient(135deg, rgba(15, 52, 96, 0.4) 0%, rgba(26, 26, 46, 0.5) 100%),
+        url('https://images.pexels.com/photos/7805049/pexels-photo-7805049.jpeg') center/cover;
+    color: white;
+    padding: 12rem 5% 8rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
 
         .hero::before {
             content: '';

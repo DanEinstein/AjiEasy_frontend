@@ -1,8 +1,32 @@
 // auth.js - Central Authentication Module for AjiEasy
 // This file contains all reusable authentication functions
 
-// Backend API base URL - UPDATED TO RENDER
-const API_URL = 'https://ajieasy-backend.onrender.com';
+// Emergency Fallback
+if (!window.CONFIG || !window.CONFIG.API_URL) {
+    console.error("CONFIG missing! Injecting emergency fallback.");
+    window.CONFIG = {
+        API_URL: "https://ajieasy-backend.onrender.com",
+        TOKEN_KEY: "aji_token",
+        USER_KEY: "aji_user"
+    };
+}
+
+const API_URL = window.CONFIG.API_URL;
+
+// Global Error Banner
+function showError(msg) {
+    let banner = document.getElementById("global-error");
+    if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "global-error";
+        banner.style.cssText = "position:fixed;top:0;left:0;width:100%;background:#dc3545;color:white;text-align:center;padding:12px;z-index:9999;font-weight:bold;";
+        document.body.prepend(banner);
+    }
+    banner.textContent = "Error: " + msg;
+    setTimeout(() => {
+        if (banner) banner.remove();
+    }, 5000);
+}
 
 /**
  * Login user with email and password
@@ -12,34 +36,50 @@ const API_URL = 'https://ajieasy-backend.onrender.com';
  */
 async function loginUser(email, password) {
     try {
-        // FastAPI /token endpoint expects FormData with 'username' and 'password'
-        const formData = new FormData();
-        formData.append('username', email); // Note: using 'username' field for email
-        formData.append('password', password);
+        // Use URLSearchParams for x-www-form-urlencoded
+        const params = new URLSearchParams();
+        params.append('username', email);
+        params.append('password', password);
 
         const response = await fetch(`${API_URL}/token`, {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            // Save the access token to localStorage
+            // Save tokens using the configured key
+            localStorage.setItem(window.CONFIG.TOKEN_KEY, data.access_token);
+            // Also save as 'accessToken' for backward compatibility if needed
             localStorage.setItem('accessToken', data.access_token);
+<<<<<<< HEAD
             
             // Persist user profile if backend included it
             if (data.user) {
                 saveUserData(data.user);
             } else {
                 await fetchAndStoreCurrentUser();
+=======
+
+            if (data.user) {
+                localStorage.setItem(window.CONFIG.USER_KEY, JSON.stringify(data.user));
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userName', data.user.name);
+>>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b
             }
+        } else {
+            showError(data.detail || 'Login failed');
         }
 
         return data;
     } catch (error) {
         console.error('Login error:', error);
-        throw new Error('Network error. Please check your connection.');
+        showError('Network error. Please check your connection.');
+        throw error;
     }
 }
 
@@ -52,7 +92,7 @@ async function loginUser(email, password) {
  */
 async function registerUser(name, email, password) {
     try {
-        const response = await fetch(`${API_URL}/register/`, {
+        const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,79 +105,61 @@ async function registerUser(name, email, password) {
         });
 
         const data = await response.json();
-
+        if (!response.ok) {
+            showError(data.detail || 'Registration failed');
+        }
         return data;
     } catch (error) {
         console.error('Registration error:', error);
-        throw new Error('Network error. Please check your connection.');
+        showError('Network error during registration.');
+        throw error;
     }
 }
 
 /**
  * Log out the current user
- * Clears all authentication data from localStorage and redirects to login
  */
 function logoutUser() {
-    // Clear all user data from localStorage
+    localStorage.removeItem(window.CONFIG.TOKEN_KEY);
     localStorage.removeItem('accessToken');
+    localStorage.removeItem(window.CONFIG.USER_KEY);
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
-    localStorage.removeItem('user'); // Added for compatibility with app.html
-    
-    // Redirect to login page
+    localStorage.removeItem('user');
     window.location.href = 'login.html';
 }
 
 /**
  * Check if user is authenticated
- * If not authenticated, redirect to login page
- * This function should be called on protected pages
  */
 function checkAuth() {
-    const token = localStorage.getItem('accessToken');
-    
+    const token = localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem('accessToken');
     if (!token) {
-        // No token found - redirect to login
         window.location.href = 'login.html';
     }
 }
 
 /**
  * Get the current access token
- * @returns {string|null} The access token or null if not found
  */
 function getToken() {
-    return localStorage.getItem('accessToken');
-}
-
-/**
- * Get the current user's email
- * @returns {string|null} The user's email or null if not found
- */
-function getUserEmail() {
-    return localStorage.getItem('userEmail');
-}
-
-/**
- * Get the current user's name
- * @returns {string|null} The user's name or null if not found
- */
-function getUserName() {
-    return localStorage.getItem('userName');
+    return localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem('accessToken');
 }
 
 /**
  * Make an authenticated API request
- * @param {string} endpoint - The API endpoint (e.g., '/generate-questions')
- * @param {Object} options - Fetch options (method, body, etc.)
- * @returns {Promise<Object>} Response from the server
  */
 async function authenticatedRequest(endpoint, options = {}) {
     const token = getToken();
-    
+
     if (!token) {
-        throw new Error('Not authenticated');
+        window.location.href = 'login.html';
+        return;
     }
+
+    // Ensure endpoint starts with / if not present (though we construct with template literal)
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${API_URL}${cleanEndpoint}`;
 
     const defaultOptions = {
         headers: {
@@ -156,26 +178,29 @@ async function authenticatedRequest(endpoint, options = {}) {
     };
 
     try {
-        const response = await fetch(`${API_URL}${endpoint}`, mergedOptions);
-        
-        // If unauthorized, clear token and redirect to login
+        const response = await fetch(url, mergedOptions);
+
         if (response.status === 401) {
             logoutUser();
             return;
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+            showError(errorMessage);
+            throw new Error(errorMessage);
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('API request error:', error);
+        showError(error.message || 'API request failed');
         throw error;
     }
 }
 
+<<<<<<< HEAD
 // Enhanced user data management for better compatibility
 function saveUserData(userData) {
     if (userData) {
@@ -226,3 +251,15 @@ if (typeof module !== 'undefined' && module.exports) {
         fetchAndStoreCurrentUser
     };
 }
+=======
+// Export functions
+window.auth = {
+    loginUser,
+    registerUser,
+    logoutUser,
+    checkAuth,
+    getToken,
+    authenticatedRequest,
+    showError
+};
+>>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b

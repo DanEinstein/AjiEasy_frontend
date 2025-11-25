@@ -1,1286 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AjiEasy - AI Interview Preparation</title>
+    <title>AjiEasy - Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary-blue: #0f3460;
-            --primary-teal: #16c79a;
-            --accent-purple: #667eea;
-            --accent-pink: #764ba2;
-            --dark-blue: #1a1a2e;
-            --light-bg: #f8f9fa;
-            --white: #ffffff;
-            --text-dark: #333333;
-            --text-light: #666666;
-            --border-light: #e0e0e0;
-            --success: #16c79a;
-            --error: #dc3545;
-            --warning: #ffc107;
-            --shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            line-height: 1.6;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background: var(--white);
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-hover);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 300px;
-            animation: slideIn 0.3s ease-out;
-            border-left: 4px solid var(--success);
-            backdrop-filter: blur(10px);
-        }
-
-        .toast.success {
-            border-left-color: var(--success);
-        }
-
-        .toast.error {
-            border-left-color: var(--error);
-        }
-
-        .toast.info {
-            border-left-color: var(--primary-blue);
-        }
-
-        .toast-icon {
-            font-size: 1.5rem;
-        }
-
-        .toast-message {
-            flex: 1;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: #999;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            transition: color 0.3s ease;
-        }
-
-        .toast-close:hover {
-            color: var(--text-dark);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Navbar */
-        .navbar {
-            background: rgba(15, 52, 96, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .brand {
-            color: var(--white);
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .brand i {
-            color: var(--primary-teal);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .user-info {
-            color: var(--white);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-teal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--white);
-        }
-
-        .btn-logout {
-            padding: 0.7rem 1.5rem;
-            border: 2px solid var(--white);
-            background-color: transparent;
-            border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--white);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-logout:hover {
-            background-color: var(--white);
-            color: var(--primary-blue);
-            transform: translateY(-2px);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1400px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .app-container {
-            display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 2rem;
-            min-height: 600px;
-        }
-
-        /* Control Panel */
-        .control-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .control-panel h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .control-panel h2 i {
-            color: var(--primary-teal);
-        }
-
-        /* Feature Tabs */
-        .feature-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border-light);
-        }
-
-        .feature-tab {
-            padding: 0.8rem 1.2rem;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .feature-tab.active {
-            color: var(--primary-teal);
-            border-bottom-color: var(--primary-teal);
-        }
-
-        .feature-tab:hover {
-            color: var(--primary-blue);
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .input-group label {
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .input-group label span.required {
-            color: var(--error);
-        }
-
-        .input-group input,
-        .input-group select,
-        .input-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border-light);
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background-color: rgba(248, 249, 250, 0.8);
-        }
-
-        .input-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-teal);
-            background-color: var(--white);
-            box-shadow: 0 0 0 3px rgba(22, 199, 154, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            width: 100%;
-            background-color: var(--border-light);
-            border-radius: 12px;
-            height: 8px;
-            overflow: hidden;
-            display: none;
-            margin: 1rem 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary-teal), #13a77e);
-            transition: width 0.3s ease;
-            border-radius: 12px;
-        }
-
-        .btn-generate {
-            width: 100%;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 15px rgba(22, 199, 154, 0.3);
-        }
-
-        .btn-generate:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(22, 199, 154, 0.4);
-        }
-
-        .btn-generate:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Quiz Options */
-        .quiz-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .option-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .option-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        .option-group select {
-            padding: 0.7rem;
-            font-size: 0.9rem;
-        }
-
-        /* Chat Interface Styles */
-        .chat-interface {
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 1rem;
-            background: var(--light-bg);
-            border-radius: 15px;
-            margin-bottom: 1rem;
-        }
-
-        .chat-welcome {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
-        }
-
-        .welcome-icon {
-            font-size: 3rem;
-            color: var(--primary-teal);
-            margin-bottom: 1rem;
-        }
-
-        .chat-message {
-            display: flex;
-            margin-bottom: 1.5rem;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .chat-message.user-message {
-            justify-content: flex-end;
-        }
-
-        .chat-message.user-message .message-content {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .chat-message.ai-message .message-content {
-            background: white;
-            border: 2px solid var(--border-light);
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 1rem;
-            background: var(--primary-teal);
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .chat-message.user-message .message-avatar {
-            background: var(--primary-blue);
-            order: 2;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 1rem 1.5rem;
-            border-radius: 18px;
-            box-shadow: var(--shadow);
-        }
-
-        .message-text {
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-        }
-
-        .message-time {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            text-align: right;
-        }
-
-        .chat-input-container {
-            background: white;
-            padding: 1rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-
-        /* History Section */
-        .history-section {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid var(--border-light);
-        }
-
-        .history-section h3 {
-            font-size: 1.1rem;
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            padding: 1rem;
-            background: rgba(248, 249, 250, 0.8);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .history-item:hover {
-            background: var(--white);
-            border-color: var(--primary-teal);
-            transform: translateX(5px);
-            box-shadow: var(--shadow);
-        }
-
-        .history-item-topic {
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 0.85rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .history-item-date {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        /* Info Box */
-        .info-box {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
-            border-radius: 16px;
-            color: var(--white);
-            box-shadow: var(--shadow);
-        }
-
-        .info-box h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-box p {
-            font-size: 0.85rem;
-            line-height: 1.6;
-            opacity: 0.95;
-        }
-
-        /* Display Panel */
-        .display-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            overflow-y: auto;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            max-height: calc(100vh - 200px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Initial State */
-        .initial-state {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            padding: 2rem;
-            width: 100%;
-            height: 100%;
-        }
-
-        .initial-state .icon {
-            font-size: 6rem;
-            color: var(--primary-teal);
-            margin-bottom: 1.5rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .initial-state h3 {
-            font-size: 2.2rem;
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .initial-state p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            max-width: 400px;
-            line-height: 1.8;
-        }
-
-        /* Loading State */
-        .loading-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            padding: 2rem;
-            width: 100%;
-            height: 100%;
-        }
-
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 6px solid rgba(22, 199, 154, 0.2);
-            border-top: 6px solid var(--primary-teal);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-state p {
-            font-size: 1.2rem;
-            color: var(--primary-blue);
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* Results State */
-        .results-state {
-            width: 100%;
-            display: none;
-        }
-
-        .results-state.active {
-            display: block;
-        }
-
-        .results-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .results-header-left h3 {
-            font-size: 1.8rem;
-            color: var(--primary-blue);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .results-header .topic-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
-            color: var(--white);
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            box-shadow: 0 2px 10px rgba(22, 199, 154, 0.3);
-        }
-
-        .results-actions {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            padding: 0.7rem 1.4rem;
-            border: 2px solid var(--primary-blue);
-            background: var(--white);
-            color: var(--primary-blue);
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .btn-action:hover {
-            background: var(--primary-blue);
-            color: var(--white);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-action.favorite {
-            border-color: var(--primary-teal);
-            color: var(--primary-teal);
-        }
-
-        .btn-action.favorite:hover {
-            background: var(--primary-teal);
-            color: var(--white);
-        }
-
-        /* Analytics Dashboard */
-        .analytics-dashboard {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
-
-        .analytics-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .analytics-header h4 {
-            font-size: 1.3rem;
-            color: var(--primary-blue);
-            font-weight: 700;
-        }
-
-        .charts-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .chart-wrapper {
-            background: var(--light-bg);
-            padding: 1rem;
-            border-radius: 10px;
-        }
-
-        .chart-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        /* Quiz Interface */
-        .quiz-interface {
-            margin-bottom: 2rem;
-        }
-
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .quiz-progress {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .progress-text {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        .quiz-question {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .quiz-option {
-            padding: 1rem 1.5rem;
-            border: 2px solid var(--border-light);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .quiz-option:hover {
-            border-color: var(--primary-teal);
-            transform: translateX(5px);
-        }
-
-        .quiz-option.selected {
-            border-color: var(--primary-teal);
-            background: rgba(22, 199, 154, 0.1);
-        }
-
-        .quiz-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2rem;
-        }
-
-        .hint-section {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(255, 193, 7, 0.1);
-            border-radius: 10px;
-            border-left: 4px solid var(--warning);
-        }
-
-        .hint-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .hint-header h5 {
-            color: var(--warning);
-            font-weight: 600;
-        }
-
-        .hint-content {
-            color: var(--text-dark);
-            font-size: 0.9rem;
-        }
-
-        /* Results Content */
-        .results-content {
-            line-height: 1.8;
-            width: 100%;
-        }
-
-        .results-content ol {
-            counter-reset: item;
-            list-style: none;
-            padding-left: 0;
-            width: 100%;
-        }
-
-        .results-content ol li {
-            counter-increment: item;
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            padding-left: 4rem;
-            position: relative;
-            font-size: 1.05rem;
-            background: rgba(248, 249, 250, 0.8);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-teal);
-            transition: all 0.3s ease;
-            width: 100%;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .results-content ol li:hover {
-            background: var(--white);
-            transform: translateX(5px);
-            box-shadow: var(--shadow);
-        }
-
-        .results-content ol li::before {
-            content: counter(item);
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, var(--primary-teal), #13a77e);
-            color: var(--white);
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(22, 199, 154, 0.3);
-        }
-
-        .results-content strong {
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        /* Hidden class */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Footer */
-        .footer {
-            background: rgba(15, 52, 96, 0.95);
-            backdrop-filter: blur(10px);
-            color: var(--white);
-            padding: 1.5rem 2rem;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            color: var(--white);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        /* Enhanced Desktop Optimizations */
-        @media (min-width: 1024px) {
-            .app-container {
-                grid-template-columns: 450px 1fr;
-                gap: 2.5rem;
-            }
-
-            .display-panel {
-                padding: 2.5rem;
-            }
-
-            .results-header {
-                align-items: flex-start;
-            }
-
-            .results-actions {
-                justify-content: flex-end;
-                flex-wrap: nowrap;
-            }
-
-            .btn-action {
-                min-width: 120px;
-            }
-        }
-
-        /* Enhanced Mobile Responsiveness */
-        @media (max-width: 992px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-
-            .control-panel,
-            .display-panel {
-                max-height: none;
-            }
-
-            .results-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .results-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .btn-action {
-                flex: 1;
-                min-width: 140px;
-                justify-content: center;
-            }
-
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .brand {
-                font-size: 1.5rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .control-panel,
-            .display-panel {
-                padding: 1.5rem;
-                border-radius: 16px;
-            }
-
-            .quiz-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .results-content ol li {
-                padding: 1rem;
-                padding-left: 3rem;
-                font-size: 0.95rem;
-            }
-
-            .results-content ol li::before {
-                width: 1.8rem;
-                height: 1.8rem;
-                font-size: 0.85rem;
-                left: 0.8rem;
-            }
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(248, 249, 250, 0.8);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-teal);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #13a77e;
-        }
-    </style>
+    <link rel="stylesheet" href="css/app.css">
+    <script>
+        window.CONFIG = {
+            API_URL: "https://ajieasy-backend.onrender.com",
+            TOKEN_KEY: "aji_token",
+            USER_KEY: "aji_user"
+        };
+    </script>
 </head>
-
 <body>
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+        <p id="loadingMessage">Loading...</p>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="index.html" class="brand">
-            <i class="fas fa-rocket"></i>
-            AjiEasy
-        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="hamburger-menu" id="hamburgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="index.html" class="brand">
+                <i class="fas fa-rocket"></i>
+                AjiEasy
+            </a>
+        </div>
+
         <div class="nav-right">
-            <div class="user-info" id="userInfo">
-                <div class="user-avatar" id="userAvatar">JS</div>
-                <span id="userName">Loading...</span>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span id="userName">User</span>
             </div>
             <button class="btn-logout" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
-                Log Out
+                <span>Log Out</span>
             </button>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="app-container">
-            <!-- Left Column - Control Panel -->
-            <div class="control-panel">
-                <h2>
-                    <i class="fas fa-brain"></i>
-                    AI Interview Assistant
-                </h2>
-
-                <!-- Feature Tabs -->
-                <div class="feature-tabs">
-                    <button class="feature-tab active" data-tab="questions">
-                        <i class="fas fa-question-circle"></i>
-                        Questions
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="nav-section">
+                <h3>Main Menu</h3>
+                <div class="nav-links">
+                    <button class="nav-link active" data-view="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
                     </button>
-                    <button class="feature-tab" data-tab="quiz">
-                        <i class="fas fa-puzzle-piece"></i>
-                        Quiz
+                    <button class="nav-link" data-view="questions">
+                        <i class="fas fa-question-circle"></i> Interview Prep
                     </button>
-                    <button class="feature-tab" data-tab="chat">
-                        <i class="fas fa-comments"></i>
-                        AI Chat
+                    <button class="nav-link" data-view="quiz">
+                        <i class="fas fa-puzzle-piece"></i> Practice Quiz
                     </button>
-                    <button class="feature-tab" data-tab="analytics">
-                        <i class="fas fa-chart-bar"></i>
-                        Analytics
+                    <button class="nav-link" data-view="chat">
+                        <i class="fas fa-comments"></i> AI Assistant
                     </button>
                 </div>
+            </div>
 
-                <!-- Questions Tab -->
-                <div class="tab-content active" id="questions-tab">
-                    <form id="topicForm">
-                        <div class="input-group">
-                            <label for="topic">
-                                <i class="fas fa-tag"></i>
-                                Interview Topic
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" id="topic" name="topic"
-                                placeholder="Enter a topic (e.g., Python, Project Management)" required
-                                list="topicSuggestions">
-                            <datalist id="topicSuggestions">
-                                <option value="Python Programming">
-                                <option value="JavaScript Basics">
-                                <option value="React Development">
-                                <option value="Project Management">
-                                <option value="Data Structures">
-                                <option value="System Design">
-                                <option value="Behavioral Questions">
-                                <option value="Database Design">
-                            </datalist>
+            <div class="nav-section">
+                <h3>Insights</h3>
+                <div class="nav-links">
+                    <button class="nav-link" data-view="analytics">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view-section active dashboard-view">
+                <div class="welcome-header fade-in">
+                    <h1 id="welcomeMessage">Welcome back!</h1>
+                    <p>Ready to ace your next interview? Choose an activity below to get started.</p>
+                </div>
+
+                <!-- Trending Recommendations (Gemini Powered) -->
+                <div class="recommendations-section fade-in" style="animation-delay: 0.1s;">
+                    <h2 class="text-gradient" style="margin-bottom: 1.5rem; font-size: 1.5rem;">
+                        <i class="fas fa-bolt" style="color: var(--warning);"></i> Trending in 2025
+                    </h2>
+                    <div class="rec-scroll" id="recommendationsList">
+                        <div class="rec-card">
+                            <i class="fas fa-spinner fa-spin"></i> Loading trends...
                         </div>
+                    </div>
+                </div>
 
-                        <div class="input-group">
-                            <label for="jobDescription">
-                                <i class="fas fa-briefcase"></i>
-                                Describe the Job Role
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" id="jobDescription" name="jobDescription"
-                                placeholder="E.g., Software Engineer responsible for backend APIs" required>
-                        </div>
-
-                        <div class="input-group">
-                            <label for="interviewType">
-                                <i class="fas fa-users"></i>
-                                Nature of Interview
-                            </label>
-                            <select id="interviewType" name="interviewType" required>
-                                <option value="" disabled selected>Select interview type</option>
-                                <option value="Technical">Technical</option>
-                                <option value="HR">HR</option>
-                                <option value="Managerial">Managerial</option>
-                                <option value="Group">Group</option>
-                                <option value="Case Study">Case Study</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <label for="companyNature">
-                                <i class="fas fa-building"></i>
-                                Nature of Company
-                            </label>
-                            <select id="companyNature" name="companyNature" required>
-                                <option value="" disabled selected>Select company nature</option>
-                                <option value="Startup">Startup</option>
-                                <option value="Small Business">Small Business</option>
-                                <option value="Corporation">Corporation</option>
-                                <option value="Non-Profit">Non-Profit</option>
-                                <option value="Government">Government</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="progress-container" id="progressContainer">
-                            <div class="progress-bar" id="progressBar"></div>
-                        </div>
-
-                        <button type="submit" class="btn-generate" id="generateBtn">
+                <div class="dashboard-grid fade-in" style="animation-delay: 0.2s;">
+                    <div class="action-card" data-view="questions">
+                        <div class="card-icon icon-blue">
                             <i class="fas fa-magic"></i>
-                            Generate Questions
-                        </button>
-                    </form>
+                        </div>
+                        <h3>Generate Questions</h3>
+                        <p>Get personalized interview questions based on your target role and company.</p>
+                    </div>
+
+                    <div class="action-card" data-view="quiz">
+                        <div class="card-icon icon-teal">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <h3>Take a Quiz</h3>
+                        <p>Test your knowledge with interactive quizzes on various technical topics.</p>
+                    </div>
+
+                    <div class="action-card" data-view="chat">
+                        <div class="card-icon icon-purple">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Chat Coach</h3>
+                        <p>Have a conversation with our AI coach to practice your answers.</p>
+                    </div>
                 </div>
 
-                <!-- Quiz Tab -->
-                <div class="tab-content" id="quiz-tab">
+                <div class="recent-activity fade-in" style="animation-delay: 0.3s;">
+                    <div class="section-header">
+                        <h2>Recent Activity</h2>
+                    </div>
+                    <div class="activity-list" id="recentActivityList">
+                        <!-- Populated by JS -->
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fas fa-history"></i></div>
+                            <div class="activity-details">
+                                <div class="activity-title">No recent activity</div>
+                                <div class="activity-meta">Start practicing to see your history here</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions View -->
+            <div id="questionsView" class="view-section">
+                <div class="section-header">
+                    <h2>Interview Question Generator</h2>
+                </div>
+
+                <form id="topicForm">
+                    <div class="input-group">
+                        <label>Interview Topic</label>
+                        <input type="text" name="topic" placeholder="e.g. React, Project Management" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Job Description / Role</label>
+                        <input type="text" name="jobDescription" placeholder="e.g. Senior Frontend Developer" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group">
+                            <label>Interview Type</label>
+                            <select name="interviewType">
+                                <option value="Technical">Technical</option>
+                                <option value="Behavioral">Behavioral</option>
+                                <option value="HR">HR</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Company Type</label>
+                            <select name="companyNature">
+                                <option value="Startup">Startup</option>
+                                <option value="Corporation">Corporation</option>
+                                <option value="Remote">Remote</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-bolt"></i> Generate Questions
+                    </button>
+                </form>
+
+                <div id="questionsResults" class="results-container" style="display: none;">
+                    <!-- Results populated by JS -->
+                </div>
+            </div>
+
+            <!-- Quiz View -->
+            <div id="quizView" class="view-section">
+                <div class="section-header">
+                    <h2>Practice Quiz</h2>
+                </div>
+
+                <div id="quizSetup" class="fade-in">
                     <form id="quizForm">
                         <div class="input-group">
-                            <label for="quizTopic">
-                                <i class="fas fa-tag"></i>
-                                Quiz Topic
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" id="quizTopic" name="quizTopic" placeholder="Enter a topic for the quiz"
-                                required>
+                            <label>Topic</label>
+                            <input type="text" name="topic" placeholder="e.g. Python, System Design" required>
                         </div>
-
-                        <div class="quiz-options">
-                            <div class="option-group">
-                                <label for="quizDifficulty">Difficulty</label>
-                                <select id="quizDifficulty" name="quizDifficulty">
-                                    <option value="easy">Easy</option>
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                            </div>
-                            <div class="option-group">
-                                <label for="questionCount">Questions</label>
-                                <select id="questionCount" name="questionCount">
-                                    <option value="5">5 Questions</option>
-                                    <option value="10" selected>10 Questions</option>
-                                    <option value="15">15 Questions</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="input-group">
-                            <label for="quizFocus">
-                                <i class="fas fa-bullseye"></i>
-                                Focus Areas
-                            </label>
-                            <textarea id="quizFocus" name="quizFocus"
-                                placeholder="Specific areas you want to focus on (optional)"></textarea>
+                            <label>Difficulty</label>
+                            <select name="difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
                         </div>
-
-                        <button type="submit" class="btn-generate" id="generateQuizBtn">
-                            <i class="fas fa-play-circle"></i>
-                            Start Quiz
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-play"></i> Start Quiz
                         </button>
                     </form>
                 </div>
 
+<<<<<<< HEAD
                 <!-- Chat Tab -->
                 <div class="tab-content" id="chat-tab">
                     <div class="input-group">
@@ -2039,123 +980,87 @@
 
             quizInterface.innerHTML = `
                 <div class="quiz-header">
+=======
+                <div id="quizInterface" class="hidden fade-in">
+>>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b
                     <div class="quiz-progress">
-                        <div class="progress-text">Question ${index + 1} of ${currentQuiz.total_questions} • ${question.difficulty} • ${question.type}</div>
-                        <div class="progress-container" style="width: 200px; display: block;">
-                            <div class="progress-bar" style="width: ${progress}%;"></div>
-                        </div>
+                        <span id="quizProgressText">Question 1 of 10</span>
+                        <div class="progress-bar"><div class="progress-fill" id="quizProgressBar" style="width: 10%"></div></div>
                     </div>
-                    <div class="score-badge" style="background: var(--primary-blue); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;">
-                        Score: ${quizScore}/${index}
+
+                    <div id="quizQuestionContainer">
+                        <!-- Questions injected here -->
+                    </div>
+
+                    <div class="quiz-controls">
+                        <button id="nextQuestionBtn" class="btn-secondary hidden">Next Question</button>
+                        <button id="finishQuizBtn" class="btn-primary hidden">Finish Quiz</button>
                     </div>
                 </div>
-                <div class="quiz-question">
-                    <div class="question-text">${question.question}</div>
-                    <div class="quiz-options">
-                        ${question.options.map((option, optIndex) => `
-                            <div class="quiz-option" data-option="${optIndex}">
-                                <span class="option-letter">${String.fromCharCode(65 + optIndex)}.</span>
-                                <span class="option-text">${option}</span>
+
+                <div id="quizResults" class="hidden fade-in">
+                    <div class="score-card">
+                        <h3>Quiz Complete!</h3>
+                        <div class="score-display">
+                            <span id="finalScore">0</span>%
+                        </div>
+                        <p id="scoreMessage">Great job!</p>
+                        <button class="btn-primary" onclick="location.reload()">Take Another Quiz</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat View -->
+            <div id="chatView" class="view-section">
+                <div class="section-header">
+                    <h2>AI Chat Coach</h2>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                Hello! I'm your AI Interview Coach. I can help you practice answers, review your resume, or discuss technical topics. What would you like to work on?
                             </div>
-                        `).join('')}
-                    </div>
-                    <div class="hint-section">
-                        <div class="hint-header">
-                            <i class="fas fa-lightbulb"></i>
-                            <h5>Need a hint?</h5>
-                        </div>
-                        <div class="hint-content">${question.hint}</div>
-                    </div>
-                    <div class="quiz-navigation">
-                        <button class="btn-action" id="prevQuestionBtn" ${index === 0 ? 'disabled' : ''}>
-                            <i class="fas fa-arrow-left"></i>
-                            Previous
-                        </button>
-                        <button class="btn-action" id="nextQuestionBtn">
-                            <i class="fas fa-arrow-right"></i>
-                            ${index === currentQuiz.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            // Add event listeners
-            document.querySelectorAll('.quiz-option').forEach(option => {
-                option.addEventListener('click', function () {
-                    document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-
-            document.getElementById('prevQuestionBtn').addEventListener('click', () => {
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    displayQuestion(currentQuestionIndex);
-                }
-            });
-
-            document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-                const selectedOption = document.querySelector('.quiz-option.selected');
-                if (selectedOption) {
-                    const selectedIndex = parseInt(selectedOption.getAttribute('data-option'));
-                    const isCorrect = selectedIndex === question.correctAnswer;
-
-                    if (isCorrect) {
-                        quizScore++;
-                    }
-
-                    currentQuestionIndex++;
-                    displayQuestion(currentQuestionIndex);
-                } else {
-                    showToast('Please select an answer before continuing', 'error');
-                }
-            });
-        }
-
-        function showQuizResults() {
-            const scorePercentage = (quizScore / currentQuiz.total_questions) * 100;
-            const performance = scorePercentage >= 80 ? 'excellent' : scorePercentage >= 60 ? 'good' : 'needs improvement';
-
-            quizInterface.innerHTML = `
-                <div class="quiz-question" style="text-align: center;">
-                    <div class="question-text" style="font-size: 2rem; color: ${scorePercentage >= 80 ? 'var(--success)' : scorePercentage >= 60 ? 'var(--warning)' : 'var(--error)'};">
-                        Quiz Complete!
-                    </div>
-                    <div style="font-size: 3rem; margin: 2rem 0; color: var(--primary-blue);">
-                        ${quizScore}/${currentQuiz.total_questions}
-                    </div>
-                    <div style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark);">
-                        ${scorePercentage.toFixed(1)}% - ${performance.toUpperCase()}
-                    </div>
-                    <div style="font-size: 1.1rem; margin-bottom: 2rem; color: var(--text-light);">
-                        ${getPerformanceMessage(performance)}
-                    </div>
-                    <div class="performance-breakdown" style="margin-bottom: 2rem; padding: 1rem; background: var(--light-bg); border-radius: 10px;">
-                        <h4 style="color: var(--primary-blue); margin-bottom: 1rem;">Performance Breakdown</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left;">
-                            <div>Correct Answers: <strong>${quizScore}</strong></div>
-                            <div>Total Questions: <strong>${currentQuiz.total_questions}</strong></div>
-                            <div>Success Rate: <strong>${scorePercentage.toFixed(1)}%</strong></div>
-                            <div>Source: <strong>${currentQuiz.source || 'AI'}</strong></div>
                         </div>
                     </div>
-                    <div class="quiz-navigation">
-                        <button class="btn-action" id="reviewQuizBtn">
-                            <i class="fas fa-search"></i>
-                            Review Answers
+
+                    <form class="chat-input-area" id="chatForm">
+                        <input type="text" id="chatInput" placeholder="Type your message..." required autocomplete="off">
+                        <button type="submit" class="btn-send">
+                            <i class="fas fa-paper-plane"></i>
                         </button>
-                        <button class="btn-action favorite" id="saveQuizBtn">
-                            <i class="fas fa-save"></i>
-                            Save Results
-                        </button>
-                        <button class="btn-action" id="newQuizBtn">
-                            <i class="fas fa-plus"></i>
-                            New Quiz
-                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analyticsView" class="view-section">
+                <div class="section-header">
+                    <h2>Performance Analytics</h2>
+                    <button class="btn-secondary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="statQuestions">0</div>
+                        <div class="stat-label">Questions Generated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-teal"><i class="fas fa-star"></i></div>
+                        <div class="stat-value" id="statQuizScore">0%</div>
+                        <div class="stat-label">Avg Quiz Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fas fa-fire"></i></div>
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Day Streak</div>
                     </div>
                 </div>
-            `;
 
+<<<<<<< HEAD
             // Add event listeners for results actions
             document.getElementById('reviewQuizBtn').addEventListener('click', () => {
                 showToast('Review feature coming soon!', 'info');
@@ -2924,6 +1829,25 @@
         // Initialize the app
         loadHistory();
     </script>
-</body>
+=======
+                <div class="analytics-charts">
+                    <div class="chart-container">
+                        <h3>Topic Mastery</h3>
+                        <div id="topicMasteryChart" class="chart-placeholder">
+                            <!-- Simple CSS Bar Chart injected here -->
+                            <p class="text-muted">Complete quizzes to see data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="auth.js"></script>
+    <script src="js/app.js"></script>
+>>>>>>> bd3d95b75bcc32ad7687910f1367b950f0d0e77b
+</body>
 </html>
