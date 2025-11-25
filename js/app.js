@@ -1,17 +1,16 @@
 // js/app.js - Complete Integration with Gemini & Groq
 
-// API Configuration - Uses config.js
-const API_CONFIG = {
-    baseURL: window.CONFIG ? window.CONFIG.API_URL : 'https://ajieasy-backend.onrender.com',
-    endpoints: window.CONFIG ? window.CONFIG.ENDPOINTS : {
-        generateQuestions: '/generate-questions/',
-        generateQuiz: '/generate-quiz/',
-        chat: '/chat/',
-        analytics: '/analytics/',
-        recommendations: '/recommendations/',
-        health: '/health'
-    }
-};
+// Emergency Fallback
+if (!window.CONFIG || !window.CONFIG.API_URL) {
+    console.error("CONFIG missing! Injecting emergency fallback.");
+    window.CONFIG = {
+        API_URL: "https://ajieasy-backend.onrender.com",
+        TOKEN_KEY: "aji_token",
+        USER_KEY: "aji_user"
+    };
+}
+
+const API_URL = window.CONFIG.API_URL;
 
 // State Management
 const state = {
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Authentication Check
 function checkAuthentication() {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem('accessToken');
     if (!token) {
         window.location.href = 'login.html';
     }
@@ -61,7 +60,7 @@ function checkAuthentication() {
 
 // Load User Data
 function loadUserData() {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem(window.CONFIG.USER_KEY) || localStorage.getItem('user');
     const userEmail = localStorage.getItem('userEmail');
 
     if (userStr) {
@@ -112,8 +111,12 @@ function initializeNavigation() {
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        localStorage.clear();
-        window.location.href = 'login.html';
+        if (window.auth && window.auth.logoutUser) {
+            window.auth.logoutUser();
+        } else {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
     });
 }
 
@@ -172,6 +175,15 @@ function loadDashboardHistory() {
     `).join('');
 }
 
+// Helper: Get Auth Headers
+function getAuthHeaders() {
+    const token = localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem('accessToken');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // --- QUESTIONS LOGIC (Gemini) ---
 const topicForm = document.getElementById('topicForm');
 if (topicForm) {
@@ -184,13 +196,9 @@ if (topicForm) {
         document.getElementById('questionsResults').style.display = 'none';
 
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.generateQuestions}`, {
+            const response = await fetch(`${API_URL}/generate-questions/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: data.topic,
                     job_description: data.jobDescription,
@@ -207,7 +215,7 @@ if (topicForm) {
 
         } catch (error) {
             console.error(error);
-            showToast('Failed to generate questions. Please try again.', 'error');
+            if (window.auth && window.auth.showError) window.auth.showError('Failed to generate questions.');
         } finally {
             toggleLoading(false);
         }
@@ -257,13 +265,9 @@ if (quizForm) {
         document.getElementById('quizSetup').classList.add('hidden');
 
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.generateQuiz}`, {
+            const response = await fetch(`${API_URL}/generate-quiz/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: data.topic,
                     difficulty: data.difficulty,
@@ -279,7 +283,7 @@ if (quizForm) {
 
         } catch (error) {
             console.error(error);
-            showToast('Failed to generate quiz. Please try again.', 'error');
+            if (window.auth && window.auth.showError) window.auth.showError('Failed to generate quiz.');
             document.getElementById('quizSetup').classList.remove('hidden');
         } finally {
             toggleLoading(false);
@@ -388,13 +392,9 @@ if (chatForm) {
         const loadingId = appendMessage('ai', 'Thinking...', true);
 
         try {
-            const token = localStorage.getItem('accessToken');
-            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.chat}`, {
+            const response = await fetch(`${API_URL}/chat/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: "General Interview Prep",
                     message: message,
@@ -446,16 +446,10 @@ document.querySelectorAll('.nav-link[data-view="analytics"]').forEach(btn => {
 });
 
 async function loadAnalytics() {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
-
     try {
-        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.analytics}`, {
+        const response = await fetch(`${API_URL}/analytics/`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: getAuthHeaders()
         });
 
         const data = await response.json();
@@ -490,11 +484,8 @@ async function loadRecommendations() {
     if (!container) return;
 
     try {
-        const token = localStorage.getItem('accessToken');
-        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.recommendations}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+        const response = await fetch(`${API_URL}/recommendations/`, {
+            headers: getAuthHeaders()
         });
 
         if (response.ok) {
