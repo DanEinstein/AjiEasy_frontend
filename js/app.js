@@ -12,6 +12,34 @@ if (!window.CONFIG || !window.CONFIG.API_URL) {
 
 // const API_URL = window.CONFIG.API_URL; // Removed to avoid conflict with auth.js
 
+// UNIVERSAL FETCH WITH TOKEN — USE THIS EVERYWHERE
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem("aji_token") || localStorage.getItem("accessToken");
+
+    const headers = {
+        "Content-Type": "application/json",
+        ...(token && { "Authorization": `Bearer ${token}` }),
+        ...options.headers
+    };
+
+    const response = await fetch(`${window.CONFIG.API_URL}${endpoint}`, {
+        ...options,
+        headers
+    });
+
+    if (response.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("aji_token");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("aji_user");
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+        return;
+    }
+
+    return response;
+}
+
 // State Management
 const state = {
     user: null,
@@ -196,9 +224,8 @@ if (topicForm) {
         document.getElementById('questionsResults').style.display = 'none';
 
         try {
-            const response = await fetch(`${window.CONFIG.API_URL}/generate-questions/`, {
+            const response = await apiFetch("/generate-questions/", {
                 method: 'POST',
-                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: data.topic,
                     job_description: data.jobDescription,
@@ -265,9 +292,8 @@ if (quizForm) {
         document.getElementById('quizSetup').classList.add('hidden');
 
         try {
-            const response = await fetch(`${window.CONFIG.API_URL}/generate-quiz/`, {
+            const response = await apiFetch("/generate-quiz/", {
                 method: 'POST',
-                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: data.topic,
                     difficulty: data.difficulty,
@@ -392,9 +418,8 @@ if (chatForm) {
         const loadingId = appendMessage('ai', 'Thinking...', true);
 
         try {
-            const response = await fetch(`${window.CONFIG.API_URL}/chat/`, {
+            const response = await apiFetch("/chat/", {
                 method: 'POST',
-                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     topic: "General Interview Prep",
                     message: message,
@@ -447,9 +472,8 @@ document.querySelectorAll('.nav-link[data-view="analytics"]').forEach(btn => {
 
 async function loadAnalytics() {
     try {
-        const response = await fetch(`${window.CONFIG.API_URL}/analytics/`, {
-            method: 'GET',
-            headers: getAuthHeaders()
+        const response = await apiFetch("/analytics/", {
+            method: 'GET'
         });
 
         const data = await response.json();
@@ -484,8 +508,8 @@ async function loadRecommendations() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${window.CONFIG.API_URL}/recommendations/`, {
-            headers: getAuthHeaders()
+        const response = await apiFetch("/recommendations/", {
+            method: 'GET'
         });
 
         if (response.ok) {
