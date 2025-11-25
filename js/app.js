@@ -515,32 +515,253 @@ function saveToHistory(topic, jobDesc, type, company) {
     const history = JSON.parse(localStorage.getItem('questionHistory') || '[]');
     history.unshift({ topic, jobDesc, interviewType: type, companyNature: company, date: new Date().toISOString() });
     localStorage.setItem('questionHistory', JSON.stringify(history.slice(0, 10)));
+            <div id="feedbackArea" class="mt-3 hidden"></div>
+        </div>
+    `;
+
+    document.getElementById('nextQuestionBtn').classList.add('hidden');
+}
+
+window.checkAnswer = function(selectedIndex) {
+    const question = state.quiz[currentQuestionIndex];
+    const feedback = document.getElementById('feedbackArea');
+    const buttons = document.querySelectorAll('.option-btn');
+
+    // Disable all buttons
+    buttons.forEach(btn => btn.disabled = true);
+
+    if (selectedIndex === question.correctAnswer) {
+        quizScore++;
+        feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${question.explanation}</div>`;
+        buttons[selectedIndex].classList.add('correct');
+    } else {
+        feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${question.options[question.correctAnswer]}. ${question.explanation}</div>`;
+        buttons[selectedIndex].classList.add('wrong');
+        buttons[question.correctAnswer].classList.add('correct');
+    }
+
+    feedback.classList.remove('hidden');
+
+    // Show Next or Finish button
+    if (currentQuestionIndex < state.quiz.length - 1) {
+        const nextBtn = document.getElementById('nextQuestionBtn');
+        nextBtn.classList.remove('hidden');
+        nextBtn.onclick = () => {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        };
+    } else {
+        const finishBtn = document.getElementById('finishQuizBtn');
+        finishBtn.classList.remove('hidden');
+        finishBtn.onclick = finishQuiz;
+    }
+};
+
+function finishQuiz() {
+    document.getElementById('quizInterface').classList.add('hidden');
+    document.getElementById('quizResults').classList.remove('hidden');
+
+    const percentage = Math.round((quizScore / state.quiz.length) * 100);
+    document.getElementById('finalScore').textContent = percentage;
+
+    let message = "Keep practicing!";
+    if (percentage >= 80) message = "Outstanding performance! 🏆";
+    else if (percentage >= 60) message = "Good job! You're getting there. 👍";
+
+    document.getElementById('scoreMessage').textContent = message;
+}
+
+// --- CHAT LOGIC ---
+const chatForm = document.getElementById('chatForm');
+if (chatForm) {
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (!message) return;
+
+        // Add User Message
+        appendMessage('user', message);
+        input.value = '';
+
+        // Add Loading Message
+        const loadingId = appendMessage('ai', 'Thinking...', true);
+
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.chat}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    topic: "General Interview Prep", // Default context
+                    message: message,
+                    history: state.chatHistory
+                })
+            });
+
+            const data = await response.json();
+
+            // Remove loading, add AI response
+            document.getElementById(loadingId).remove();
+            appendMessage('ai', data.response || data.message);
+
+            // Update History
+            state.chatHistory.push({ role: 'user', content: message });
+            state.chatHistory.push({ role: 'assistant', content: data.response });
+
+        } catch (error) {
+            document.getElementById(loadingId).remove();
+            appendMessage('ai', 'Sorry, I encountered an error. Please try again.');
+        }
+    });
+}
+
+function appendMessage(role, text, isLoading = false) {
+    const container = document.getElementById('chatMessages');
+    const id = 'msg-' + Date.now();
+
+    const div = document.createElement('div');
+    div.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+    div.id = id;
+
+    div.innerHTML = `
+        <div class="message-avatar"><i class="fas ${role === 'user' ? 'fa-user' : 'fa-robot'}"></i></div>
+        <div class="message-content">${text}</div>
+    `;
+
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return id;
+}
+
+// --- ANALYTICS LOGIC ---
+const refreshAnalyticsBtn = document.getElementById('refreshAnalytics');
+if (refreshAnalyticsBtn) {
+    refreshAnalyticsBtn.addEventListener('click', loadAnalytics);
+}
+
+// Load Analytics when view is switched
+document.querySelectorAll('.nav-link[data-view="analytics"]').forEach(btn => {
+    btn.addEventListener('click', loadAnalytics);
+});
+
+async function loadAnalytics() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.analytics}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({}) // Send empty body or user stats if needed
+        });
+
+        const data = await response.json();
+
+        // Update Stats
+        document.getElementById('statQuestions').textContent = data.questions_generated || 0;
+        document.getElementById('statQuizScore').textContent = (data.average_score || 0) + '%';
+        document.getElementById('statStreak').textContent = data.streak_days || 0;
+
+        // Simple Chart Visualization (CSS based)
+        const chartContainer = document.getElementById('topicMasteryChart');
+        if (data.topic_mastery) {
+            chartContainer.innerHTML = Object.entries(data.topic_mastery).map(([topic, score]) => `
+                <div style="margin-bottom: 10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;">
+                        <span>${topic}</span>
+                        <span>${score}%</span>
+                    </div>
+                    <div style="background:#eee; height:8px; border-radius:4px; overflow:hidden;">
+                        <div style="background:var(--primary-blue); height:100%; width:${score}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    } catch (error) {
+        console.error("Analytics load error", error);
+    }
+}
+
+// --- EXISTING HELPERS ---
+// Helper: Toast Notification
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${type === 'success' ? '✓' : 'ℹ'}</span>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
+// Helper: Save History
+function saveToHistory(topic, jobDesc, type, company) {
+    const history = JSON.parse(localStorage.getItem('questionHistory') || '[]');
+    history.unshift({ topic, jobDesc, interviewType: type, companyNature: company, date: new Date().toISOString() });
+    localStorage.setItem('questionHistory', JSON.stringify(history.slice(0, 10)));
     loadDashboardHistory();
 }
 
-// Load Recommendations (Mock Data for now)
-function loadRecommendations() {
-    const container = document.getElementById('recommendationsList');
+// Load Recommendations from Backend
+async function loadRecommendations() {
+    const container = document.getElementById('recommendationsScroll');
     if (!container) return;
 
-    // Simulate API fetch
-    setTimeout(() => {
-        const trends = [
-            { title: 'React 19 Features', icon: 'fa-react', color: '#61dafb' },
-            { title: 'AI Engineering', icon: 'fa-robot', color: '#16c79a' },
-            { title: 'System Design', icon: 'fa-sitemap', color: '#667eea' },
-            { title: 'Cloud Architecture', icon: 'fa-cloud', color: '#0f3460' },
-            { title: 'Cybersecurity', icon: 'fa-shield-alt', color: '#e53e3e' }
-        ];
+    try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`${API_CONFIG.baseURL}/recommendations`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-        container.innerHTML = trends.map(trend => `
-            <div class="rec-card" style="border-left: 4px solid ${trend.color}">
-                <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${trend.color}">
-                    <i class="fab ${trend.icon} fas"></i>
+        if (response.ok) {
+            const recommendations = await response.json();
+            container.innerHTML = recommendations.map(rec => `
+                <div class="rec-card" style="border-left: 4px solid ${rec.color || '#16c79a'}">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${rec.color || '#16c79a'}">
+                        <i class="fas ${rec.icon || 'fa-star'}"></i>
+                    </div>
+                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${rec.topic}</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.8;">${rec.trend}</p>
                 </div>
-                <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${trend.title}</h4>
-                <p style="font-size: 0.8rem; opacity: 0.8;">Trending now</p>
+            `).join('');
+        } else {
+            // Fallback to static if API fails
+            loadStaticRecommendations(container);
+        }
+    } catch (error) {
+        console.error('Recommendations error:', error);
+        loadStaticRecommendations(container);
+    }
+}
+
+function loadStaticRecommendations(container) {
+    const trends = [
+        { topic: 'AI Engineering', icon: 'fa-robot', color: '#16c79a', trend: 'High Demand' },
+        { topic: 'System Design', icon: 'fa-sitemap', color: '#667eea', trend: 'Evergreen' },
+        { topic: 'Cloud Architecture', icon: 'fa-cloud', color: '#0f3460', trend: 'Growing' },
+        { topic: 'Cybersecurity', icon: 'fa-shield-alt', color: '#e53e3e', trend: 'Critical' }
+    ];
+
+    container.innerHTML = trends.map(trend => `
+        <div class="rec-card" style="border-left: 4px solid ${trend.color}">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${trend.color}">
+                <i class="fas ${trend.icon}"></i>
             </div>
-        `).join('');
-    }, 1000);
+            <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${trend.topic}</h4>
+            <p style="font-size: 0.8rem; opacity: 0.8;">${trend.trend}</p>
+        </div>
+    `).join('');
 }
