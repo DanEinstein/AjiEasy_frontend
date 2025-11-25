@@ -10,7 +10,7 @@ if (!window.CONFIG || !window.CONFIG.API_URL) {
     };
 }
 
-const API_URL = window.CONFIG.API_URL;
+// const API_URL = window.CONFIG.API_URL; // Removed to avoid conflict with auth.js
 
 // State Management
 const state = {
@@ -196,7 +196,7 @@ if (topicForm) {
         document.getElementById('questionsResults').style.display = 'none';
 
         try {
-            const response = await fetch(`${API_URL}/generate-questions/`, {
+            const response = await fetch(`${window.CONFIG.API_URL}/generate-questions/`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -265,7 +265,7 @@ if (quizForm) {
         document.getElementById('quizSetup').classList.add('hidden');
 
         try {
-            const response = await fetch(`${API_URL}/generate-quiz/`, {
+            const response = await fetch(`${window.CONFIG.API_URL}/generate-quiz/`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -392,7 +392,7 @@ if (chatForm) {
         const loadingId = appendMessage('ai', 'Thinking...', true);
 
         try {
-            const response = await fetch(`${API_URL}/chat/`, {
+            const response = await fetch(`${window.CONFIG.API_URL}/chat/`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -447,7 +447,7 @@ document.querySelectorAll('.nav-link[data-view="analytics"]').forEach(btn => {
 
 async function loadAnalytics() {
     try {
-        const response = await fetch(`${API_URL}/analytics/`, {
+        const response = await fetch(`${window.CONFIG.API_URL}/analytics/`, {
             method: 'GET',
             headers: getAuthHeaders()
         });
@@ -484,7 +484,7 @@ async function loadRecommendations() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API_URL}/recommendations/`, {
+        const response = await fetch(`${window.CONFIG.API_URL}/recommendations/`, {
             headers: getAuthHeaders()
         });
 
