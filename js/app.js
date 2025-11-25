@@ -324,7 +324,11 @@ function showQuestion(index) {
         </div>
     `;
 
-    document.getElementById('nextQuestionBtn').classList.add('hidden');
+    // Hide both buttons when showing new question
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    const finishBtn = document.getElementById('finishQuizBtn');
+    if (nextBtn) nextBtn.classList.add('hidden');
+    if (finishBtn) finishBtn.classList.add('hidden');
 }
 
 window.checkAnswer = function(selectedIndex) {
