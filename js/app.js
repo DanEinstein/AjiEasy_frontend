@@ -1,15 +1,15 @@
 // js/app.js - Complete Integration with Gemini & Groq
 
-// API Configuration
+// API Configuration - Uses config.js
 const API_CONFIG = {
-    baseURL: 'https://ajieasy-backend.onrender.com',
+    baseURL: CONFIG.API_URL,
     endpoints: {
-        generateQuestions: '/generate-questions/',
-        generateQuiz: '/generate-quiz/',
-        chat: '/chat/',
-        analytics: '/analytics/',
-        recommendations: '/recommendations/',
-        health: '/health'
+        generateQuestions: CONFIG.ENDPOINTS.GENERATE_QUESTIONS,
+        generateQuiz: CONFIG.ENDPOINTS.GENERATE_QUIZ,
+        chat: CONFIG.ENDPOINTS.CHAT,
+        analytics: CONFIG.ENDPOINTS.ANALYTICS,
+        recommendations: CONFIG.ENDPOINTS.RECOMMENDATIONS,
+        health: CONFIG.ENDPOINTS.HEALTH
     }
 };
 

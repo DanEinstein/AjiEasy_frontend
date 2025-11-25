@@ -1,6 +1,6 @@
 const CONFIG = {
-    API_URL: 'https://ajieasy-backend.onrender.com', // Default production URL
-    // API_URL: 'http://localhost:8000', // Uncomment for local development
+    // API_URL: 'https://ajieasy-backend.onrender.com', // Production URL
+    API_URL: 'http://localhost:8000', // Local development URL
     ENDPOINTS: {
         LOGIN: '/token',
         REGISTER: '/register/',
@@ -8,6 +8,7 @@ const CONFIG = {
         GENERATE_QUIZ: '/generate-quiz/',
         CHAT: '/chat/',
         ANALYTICS: '/analytics/',
+        RECOMMENDATIONS: '/recommendations/',
         HEALTH: '/health'
     }
 };

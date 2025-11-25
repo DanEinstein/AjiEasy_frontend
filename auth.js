@@ -1,8 +1,8 @@
 // auth.js - Central Authentication Module for AjiEasy
 // This file contains all reusable authentication functions
 
-// Backend API base URL - UPDATED TO RENDER
-const API_URL = 'https://ajieasy-backend.onrender.com';
+// Backend API base URL - Uses config.js
+const API_URL = CONFIG.API_URL;
 
 /**
  * Login user with email and password
@@ -27,7 +27,7 @@ async function loginUser(email, password) {
         if (response.ok) {
             // Save the access token to localStorage
             localStorage.setItem('accessToken', data.access_token);
-            
+
             // Optionally save user info if provided
             if (data.user) {
                 localStorage.setItem('userEmail', data.user.email);
@@ -82,7 +82,7 @@ function logoutUser() {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     localStorage.removeItem('user'); // Added for compatibility with app.html
-    
+
     // Redirect to login page
     window.location.href = 'login.html';
 }
@@ -94,7 +94,7 @@ function logoutUser() {
  */
 function checkAuth() {
     const token = localStorage.getItem('accessToken');
-    
+
     if (!token) {
         // No token found - redirect to login
         window.location.href = 'login.html';
@@ -133,7 +133,7 @@ function getUserName() {
  */
 async function authenticatedRequest(endpoint, options = {}) {
     const token = getToken();
-    
+
     if (!token) {
         throw new Error('Not authenticated');
     }
@@ -156,7 +156,7 @@ async function authenticatedRequest(endpoint, options = {}) {
 
     try {
         const response = await fetch(`${API_URL}${endpoint}`, mergedOptions);
-        
+
         // If unauthorized, clear token and redirect to login
         if (response.status === 401) {
             logoutUser();
