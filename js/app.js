@@ -179,6 +179,76 @@ function loadDashboardHistory() {
     `).join('');
 }
 
+// --- QUESTIONS LOGIC ---
+const topicForm = document.getElementById('topicForm');
+if (topicForm) {
+    topicForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(topicForm);
+        const data = Object.fromEntries(formData.entries());
+
+        toggleLoading(true, 'Generating Questions...');
+        document.getElementById('questionsResults').style.display = 'none';
+
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.generateQuestions}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    topic: data.topic,
+                    job_description: data.jobDescription,
+                    interview_type: data.interviewType,
+                    company_nature: data.companyNature
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to generate questions');
+
+            const questions = await response.json();
+            displayQuestions(questions);
+            saveToHistory(data);
+
+        } catch (error) {
+            console.error(error);
+            showToast('Failed to generate questions', 'error');
+        } finally {
+            toggleLoading(false);
+        }
+    });
+}
+
+function displayQuestions(questions) {
+    const container = document.getElementById('questionsResults');
+    container.innerHTML = questions.map((q, i) => `
+        <div class="result-card fade-in" style="animation-delay: ${i * 0.1}s">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:1rem;">
+                <span class="badge badge-blue" style="background:rgba(22, 199, 154, 0.1); color:var(--primary-teal); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${q.type}</span>
+                <span class="badge badge-gray" style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${q.difficulty}</span>
+            </div>
+            <h3 style="font-size:1.1rem; margin-bottom:0.5rem; line-height:1.5;">${q.question}</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">${q.explanation}</p>
+        </div>
+    `).join('');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+    container.style.gap = '1.5rem';
+}
+
+function saveToHistory(data) {
+    const history = JSON.parse(localStorage.getItem('questionHistory') || '[]');
+    history.unshift({
+        topic: data.topic,
+        interviewType: data.interviewType,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('questionHistory', JSON.stringify(history.slice(0, 10)));
+    loadDashboardHistory();
+}
+
 // --- QUIZ LOGIC ---
 const quizForm = document.getElementById('quizForm');
 if (quizForm) {
@@ -208,7 +278,7 @@ if (quizForm) {
             if (!response.ok) throw new Error('Failed to generate quiz');
 
             const result = await response.json();
-            state.quiz = result.questions || result; // Handle different response structures
+            state.quiz = result.questions || result;
             startQuiz(state.quiz);
 
         } catch (error) {
@@ -220,7 +290,6 @@ if (quizForm) {
         }
     });
 }
-
 let currentQuestionIndex = 0;
 let quizScore = 0;
 
