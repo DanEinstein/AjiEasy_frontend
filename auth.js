@@ -2,7 +2,8 @@
 // This file contains all reusable authentication functions
 
 // Backend API base URL - Uses config.js
-const API_URL = CONFIG.API_URL;
+// Backend API base URL - Uses config.js
+const API_URL = window.CONFIG ? window.CONFIG.API_URL : 'https://ajieasy-backend.onrender.com';
 
 /**
  * Login user with email and password
