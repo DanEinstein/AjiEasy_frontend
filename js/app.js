@@ -387,6 +387,10 @@ function showQuestion(index) {
 }
 
 window.checkAnswer = function(selectedIndex) {
+    console.log('=== checkAnswer called ===');
+    console.log('Selected index:', selectedIndex);
+    console.trace('Stack trace:');
+
     const question = state.quiz[currentQuestionIndex];
     const feedback = document.getElementById('feedbackArea');
     const buttons = document.querySelectorAll('.option-btn');
