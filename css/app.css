@@ -522,9 +522,7 @@ body {
 
 .rec-scroll::-webkit-scrollbar-thumb {
     background: white;
-    border-radius: var(--radius-2xl);
-    padding: 2.5rem;
-    box-shadow: var(--shadow-md);
+    border-radius: 3px;
 }
 
 .section-header h2 {
@@ -589,7 +587,7 @@ body {
     color: var(--text-light);
 }
 
-/* Feature Views */
+/* Feature Views - FIXED QUIZ DISPLAY */
 .view-section {
     display: none;
     max-width: 1000px;
@@ -602,7 +600,29 @@ body {
 
 .view-section.active {
     display: block;
-    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* QUIZ SPECIFIC FIXES */
+#quizView {
+    position: relative;
+}
+
+#quizInterface {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#quizInterface.hidden {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+#quizSetup.hidden,
+#quizResults.hidden {
+    display: none !important;
 }
 
 /* Forms */
@@ -846,9 +866,9 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Utility Classes */
+/* Utility Classes - FIXED HIDDEN CLASS */
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 .text-center {
@@ -1087,7 +1107,7 @@ body {
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-md);
-    animation: fadeIn 0.4s ease;
+    animation: fadeIn 0.3s ease-out forwards;
 }
 
 .question-card h3 {
