@@ -1,6 +1,6 @@
 const CONFIG = {
-    API_URL: 'https://ajieasy-backend.onrender.com', // Production URL
-    // API_URL: 'http://127.0.0.1:8000', // Local development URL
+    // API_URL: 'https://ajieasy-backend.onrender.com', // Production URL
+    API_URL: 'http://127.0.0.1:8000', // Local development URL
     ENDPOINTS: {
         LOGIN: '/token',
         REGISTER: '/register/',
