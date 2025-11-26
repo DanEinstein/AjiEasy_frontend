@@ -330,20 +330,44 @@ if (quizForm) {
     });
 }
 
+// FIXED: Quiz initialization with proper timing
 function startQuiz(questions) {
     currentQuestionIndex = 0;
     quizScore = 0;
-    document.getElementById('quizInterface').classList.remove('hidden');
-    document.getElementById('quizResults').classList.add('hidden');
-    showQuestion(0);
+
+    // Get references to DOM elements
+    const quizInterface = document.getElementById('quizInterface');
+    const quizResults = document.getElementById('quizResults');
+    const quizSetup = document.getElementById('quizSetup');
+
+    // Ensure proper state transitions
+    quizSetup.classList.add('hidden');
+    quizResults.classList.add('hidden');
+    quizInterface.classList.remove('hidden');
+
+    // Force a reflow to ensure CSS transitions complete
+    quizInterface.offsetHeight;
+
+    // Small delay to ensure DOM is ready before rendering questions
+    setTimeout(() => {
+        showQuestion(0);
+    }, 100);
 }
 
+// FIXED: Question display with proper timing and safety checks
 function showQuestion(index) {
+    // Add a small safety check
+    if (!state.quiz || !state.quiz[index]) {
+        console.error('No question found at index:', index);
+        return;
+    }
+
     const question = state.quiz[index];
     const container = document.getElementById('quizQuestionContainer');
     const progressText = document.getElementById('quizProgressText');
     const progressBar = document.getElementById('quizProgressBar');
 
+    // Update progress
     progressText.textContent = `Question ${index + 1} of ${state.quiz.length}`;
     progressBar.style.width = `${((index + 1) / state.quiz.length) * 100}%`;
 
@@ -354,7 +378,6 @@ function showQuestion(index) {
             options = JSON.parse(options);
         } catch (e) {
             console.error('Failed to parse options:', e);
-            console.log('Raw options:', options);
             options = [];
         }
     }
@@ -368,18 +391,25 @@ function showQuestion(index) {
     console.log('Rendering question:', question.question);
     console.log('Options:', options);
 
-    container.innerHTML = `
-        <div class="question-card fade-in">
-            <h3>${question.question}</h3>
-            <div class="options-grid">
-                ${options.map((opt, i) => `
-                    <button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>
-                `).join('')}
-            </div>
-            <div id="feedbackArea" class="mt-3 hidden"></div>
-        </div>
-    `;
+    // Clear container first
+    container.innerHTML = '';
 
+    // Add small delay to ensure clean render
+    setTimeout(() => {
+        container.innerHTML = `
+            <div class="question-card fade-in">
+                <h3>${question.question}</h3>
+                <div class="options-grid">
+                    ${options.map((opt, i) => `
+                        <button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>
+                    `).join('')}
+                </div>
+                <div id="feedbackArea" class="mt-3 hidden"></div>
+            </div>
+        `;
+    }, 50);
+
+    // Hide navigation buttons initially
     const nextBtn = document.getElementById('nextQuestionBtn');
     const finishBtn = document.getElementById('finishQuizBtn');
     if (nextBtn) nextBtn.classList.add('hidden');
@@ -419,13 +449,13 @@ window.checkAnswer = function(selectedIndex) {
         }
     }
 
-    // If correctAnswer is still undefined or -1, default to 0
+    // FIXED: Better error handling for invalid correct answers
     if (correctAnswerIndex === undefined || correctAnswerIndex === null || correctAnswerIndex === -1) {
-        console.warn('Could not determine correct answer, defaulting to 0');
-        correctAnswerIndex = 0;
+        console.error('Invalid correct answer, skipping scoring');
+        feedback.innerHTML = `<div class="alert alert-warning">${question.explanation || 'Unable to verify answer'}</div>`;
+        feedback.classList.remove('hidden');
+        return;
     }
-
-
 
     if (selectedIndex === correctAnswerIndex) {
         quizScore++;
