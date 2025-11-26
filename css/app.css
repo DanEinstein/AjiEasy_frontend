@@ -587,7 +587,9 @@ body {
     color: var(--text-light);
 }
 
-/* Feature Views - FIXED QUIZ DISPLAY */
+/* ========== CRITICAL FIXES ========== */
+
+/* Feature Views - COMPLETELY FIXED */
 .view-section {
     display: none;
     max-width: 1000px;
@@ -600,29 +602,52 @@ body {
 
 .view-section.active {
     display: block;
-    animation: fadeIn 0.3s ease-out forwards;
+    animation: none; /* Remove conflicting animations */
 }
 
-/* QUIZ SPECIFIC FIXES */
+/* QUIZ SPECIFIC FIXES - COMPLETE OVERHAUL */
 #quizView {
     position: relative;
 }
 
+/* Quiz states - NO animations that conflict with JS */
+#quizSetup {
+    display: block;
+}
+
+#quizSetup.hidden {
+    display: none;
+}
+
 #quizInterface {
+    display: block;
     opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: visible;
 }
 
 #quizInterface.hidden {
-    display: none !important;
+    display: none;
     opacity: 0;
-    transform: translateY(20px);
+    visibility: hidden;
 }
 
-#quizSetup.hidden,
+#quizResults {
+    display: block;
+}
+
 #quizResults.hidden {
-    display: none !important;
+    display: none;
+}
+
+/* Questions Results - FIXED */
+#questionsResults {
+    display: none;
+}
+
+#questionsResults:not([style*="display: none"]) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
 }
 
 /* Forms */
@@ -743,11 +768,15 @@ body {
     inset: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
-    display: flex;
+    display: none; /* Start hidden */
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 2000;
+}
+
+.loading-overlay:not(.hidden) {
+    display: flex;
 }
 
 .spinner {
@@ -772,7 +801,6 @@ body {
     margin-bottom: 1rem;
     border-left: 5px solid var(--primary-teal);
     box-shadow: var(--shadow-sm);
-    animation: fadeIn 0.4s ease;
     transition: var(--transition-normal);
 }
 
@@ -866,9 +894,9 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Utility Classes - FIXED HIDDEN CLASS */
+/* ========== UTILITY CLASSES - COMPLETELY FIXED ========== */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .text-center {
@@ -1107,7 +1135,6 @@ body {
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-md);
-    animation: fadeIn 0.3s ease-out forwards;
 }
 
 .question-card h3 {
