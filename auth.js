@@ -83,7 +83,7 @@ async function loginUser(email, password) {
  */
 async function registerUser(name, email, password) {
     try {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`${API_URL}/register/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
