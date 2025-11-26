@@ -179,6 +179,26 @@
                 <div class="form-group">
                     <label for="email">
                         <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                        <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400; margin-left: 0.5rem;">
+                            (Minimum 6 characters)
+                        </span>
+                    </label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required
+                        autocomplete="new-password">
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-bar-fill" id="strengthBarFill"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText">Enter a password</div>
                     </div>
                 </div>
 
@@ -308,6 +328,23 @@
             strengthText.className = `strength-text ${result.level}`;
             strengthText.textContent = result.feedback;
         });
+
+        // Check backend connectivity
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${window.CONFIG.API_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    showToast('⚠️ Backend service may be experiencing issues', 'warning');
+                }
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+                showToast('⚠️ Unable to connect to server. Please check your connection.', 'warning');
+            }
+        }
 
         // Handle form submission
         registerForm.addEventListener('submit', async function (event) {
@@ -444,6 +481,9 @@
                 });
             });
         });
+
+        // Run health check on load
+        window.addEventListener('load', checkBackendHealth);
     </script>
 </body>
 

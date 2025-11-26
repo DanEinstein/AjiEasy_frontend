@@ -237,6 +237,23 @@
             rememberMeCheckbox.checked = true;
         }
 
+        // Check backend connectivity
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${window.CONFIG.API_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    showToast('⚠️ Backend service may be experiencing issues', 'warning');
+                }
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+                showToast('⚠️ Unable to connect to server. Please check your connection.', 'warning');
+            }
+        }
+
         // Handle form submission
         loginForm.addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -263,6 +280,51 @@
             const originalButtonText = submitButton.innerHTML;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
             submitButton.disabled = true;
+
+            try {
+                // Call login function from auth.js
+                const response = await loginUser(email, password);
+
+                if (response.access_token) {
+                    // Handle "Remember Me"
+                    if (rememberMeCheckbox.checked) {
+                        localStorage.setItem('rememberedEmail', email);
+                    } else {
+                        localStorage.removeItem('rememberedEmail');
+                    }
+
+                    // ✅ CRITICAL FIX: Use actual user data from response if available
+                    const userData = response.user || {
+                        email: email,
+                        name: email.split('@')[0]
+                    };
+
+                    // Save user data in ALL the formats that app.html checks
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('userEmail', userData.email);
+                    localStorage.setItem('userName', userData.name);
+                    localStorage.setItem(window.CONFIG.TOKEN_KEY, response.access_token);
+                    localStorage.setItem('accessToken', response.access_token);
+
+                    console.log('✅ User data saved for app.html:', userData);
+
+                    // Show success message
+                    showToast('Login successful! Redirecting...', 'success');
+
+                    // Login successful - redirect to app after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'app.html';
+                    }, 1500);
+                } else if (response.detail) {
+                    // Show error message from server
+                    showToast(response.detail, 'error');
+                }
+            } catch (error) {
+                // Show network error
+                showToast(error.message || 'An error occurred. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
             }
         });
@@ -309,6 +371,8 @@
             if (!emailInput.value) {
                 emailInput.focus();
             }
+            // Run health check
+            checkBackendHealth();
         });
     </script>
 </body>
