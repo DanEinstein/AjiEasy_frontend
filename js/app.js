@@ -250,6 +250,19 @@ if (topicForm) {
 }
 
 function displayQuestions(questions) {
+    console.log("Received questions:", questions);
+
+    // Robustness: Handle wrapped response if backend sends { questions: [...] }
+    if (!Array.isArray(questions) && questions.questions) {
+        questions = questions.questions;
+    }
+
+    if (!Array.isArray(questions)) {
+        console.error("Invalid questions format:", questions);
+        if (window.auth && window.auth.showError) window.auth.showError('Received invalid data format.');
+        return;
+    }
+
     const container = document.getElementById('questionsResults');
     container.innerHTML = questions.map((q, i) => `
         <div class="result-card fade-in" style="animation-delay: ${i * 0.1}s">
