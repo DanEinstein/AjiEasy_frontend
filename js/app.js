@@ -384,32 +384,9 @@ function showQuestion(index) {
     const finishBtn = document.getElementById('finishQuizBtn');
     if (nextBtn) nextBtn.classList.add('hidden');
     if (finishBtn) finishBtn.classList.add('hidden');
-
-    // DEBUG: Watch for content changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList' && container.innerHTML === '') {
-                console.error('❌ CONTENT CLEARED!');
-                console.trace('What cleared it:');
-            }
-        });
-    });
-    observer.observe(container, { childList: true, subtree: true });
-
-    // DEBUG: Log button clicks
-    document.querySelectorAll('.option-btn').forEach((btn, idx) => {
-        btn.addEventListener('click', (e) => {
-            console.log('Button clicked via addEventListener:', idx);
-            console.trace();
-        });
-    });
 }
 
 window.checkAnswer = function(selectedIndex) {
-    console.log('=== checkAnswer called ===');
-    console.log('Selected index:', selectedIndex);
-    console.trace('Stack trace:');
-
     const question = state.quiz[currentQuestionIndex];
     const feedback = document.getElementById('feedbackArea');
     const buttons = document.querySelectorAll('.option-btn');
@@ -448,7 +425,7 @@ window.checkAnswer = function(selectedIndex) {
         correctAnswerIndex = 0;
     }
 
-    console.log('Selected:', selectedIndex, 'Correct:', correctAnswerIndex);
+
 
     if (selectedIndex === correctAnswerIndex) {
         quizScore++;
