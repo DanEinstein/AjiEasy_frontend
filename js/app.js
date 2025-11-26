@@ -406,16 +406,23 @@ window.checkAnswer = function(selectedIndex) {
 
     // Parse correctAnswer - it might be an index (number) or the answer text (string)
     let correctAnswerIndex = question.correctAnswer;
-    if (typeof correctAnswerIndex === 'string') {
+    if (typeof correctAnswerIndex === 'string' && correctAnswerIndex) {
         // If it's a numeric string, convert to number
         if (correctAnswerIndex.trim().match(/^\d+$/)) {
             correctAnswerIndex = parseInt(correctAnswerIndex);
         } else {
-            // Find the index of the correct answer text
+            // Find the index of the correct answer text (with safety checks)
             correctAnswerIndex = options.findIndex(opt =>
+                opt && typeof opt === 'string' &&
                 opt.toLowerCase().trim() === correctAnswerIndex.toLowerCase().trim()
             );
         }
+    }
+
+    // If correctAnswer is still undefined or -1, default to 0
+    if (correctAnswerIndex === undefined || correctAnswerIndex === null || correctAnswerIndex === -1) {
+        console.warn('Could not determine correct answer, defaulting to 0');
+        correctAnswerIndex = 0;
     }
 
     console.log('Selected:', selectedIndex, 'Correct:', correctAnswerIndex);
