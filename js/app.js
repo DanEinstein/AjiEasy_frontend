@@ -201,15 +201,6 @@ function loadDashboardHistory() {
     `).join('');
 }
 
-// Helper: Get Auth Headers
-function getAuthHeaders() {
-    const token = localStorage.getItem(window.CONFIG.TOKEN_KEY) || localStorage.getItem('accessToken');
-    return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-    };
-}
-
 // --- QUESTIONS LOGIC (Gemini) ---
 const topicForm = document.getElementById('topicForm');
 if (topicForm) {
@@ -250,7 +241,6 @@ if (topicForm) {
 function displayQuestions(questions) {
     console.log("Received questions:", questions);
 
-    // Robustness: Handle wrapped response if backend sends { questions: [...] }
     if (!Array.isArray(questions) && questions.questions) {
         questions = questions.questions;
     }
@@ -333,28 +323,24 @@ function startQuiz(questions) {
     currentQuestionIndex = 0;
     quizScore = 0;
 
-    // Get references to DOM elements
     const quizInterface = document.getElementById('quizInterface');
     const quizResults = document.getElementById('quizResults');
     const quizSetup = document.getElementById('quizSetup');
 
-    // Ensure proper state transitions
     quizSetup.classList.add('hidden');
     quizResults.classList.add('hidden');
     quizInterface.classList.remove('hidden');
 
-    // Force a reflow to ensure CSS transitions complete
+    // Force reflow for CSS transitions
     quizInterface.offsetHeight;
 
-    // Small delay to ensure DOM is ready before rendering questions
     setTimeout(() => {
         showQuestion(0);
     }, 100);
 }
 
-// FIXED: Question display with proper timing and safety checks
+// FIXED: Question display with proper timing
 function showQuestion(index) {
-    // Add a small safety check
     if (!state.quiz || !state.quiz[index]) {
         console.error('No question found at index:', index);
         return;
@@ -365,11 +351,9 @@ function showQuestion(index) {
     const progressText = document.getElementById('quizProgressText');
     const progressBar = document.getElementById('quizProgressBar');
 
-    // Update progress
     progressText.textContent = `Question ${index + 1} of ${state.quiz.length}`;
     progressBar.style.width = `${((index + 1) / state.quiz.length) * 100}%`;
 
-    // Parse options if it's a JSON string
     let options = question.options;
     if (typeof options === 'string') {
         try {
@@ -380,7 +364,6 @@ function showQuestion(index) {
         }
     }
 
-    // Ensure options is an array
     if (!Array.isArray(options)) {
         console.error('Options is not an array:', options);
         options = [];
@@ -389,10 +372,8 @@ function showQuestion(index) {
     console.log('Rendering question:', question.question);
     console.log('Options:', options);
 
-    // Clear container first
     container.innerHTML = '';
 
-    // Add small delay to ensure clean render
     setTimeout(() => {
         container.innerHTML = `
             <div class="question-card fade-in">
@@ -416,17 +397,14 @@ function showQuestion(index) {
         });
     }, 50);
 
-    // Hide navigation buttons initially
     const nextBtn = document.getElementById('nextQuestionBtn');
     const finishBtn = document.getElementById('finishQuizBtn');
     if (nextBtn) nextBtn.classList.add('hidden');
     if (finishBtn) finishBtn.classList.add('hidden');
 }
 
-// FIXED: checkAnswer function with COMPLETE error protection
+// FIXED: Robust checkAnswer function
 function checkAnswer(selectedIndex) {
-    console.log('🔍 checkAnswer called with index:', selectedIndex);
-
     try {
         const question = state.quiz[currentQuestionIndex];
         if (!question) {
@@ -439,75 +417,46 @@ function checkAnswer(selectedIndex) {
 
         buttons.forEach(btn => btn.disabled = true);
 
-        // Parse options if it's a JSON string
         let options = question.options;
         if (typeof options === 'string') {
             try {
                 options = JSON.parse(options);
             } catch (e) {
-                console.error('Failed to parse options in checkAnswer:', e);
+                console.error('Failed to parse options:', e);
                 options = [];
             }
         }
 
-        // Ensure options is an array with safe values
         if (!Array.isArray(options)) {
-            console.error('Options is not an array:', options);
             options = [];
         }
 
-        // Clean options - replace undefined/null with empty strings
-        options = options.map(opt => {
-            if (opt === undefined || opt === null) return '';
-            return String(opt); // Force string conversion
-        });
+        // Clean options
+        options = options.map(opt => opt || '');
 
-        console.log('🔍 Cleaned options:', options);
-
-        // Parse correctAnswer - it might be an index (number) or the answer text (string)
         let correctAnswerIndex = question.correctAnswer;
-        console.log('🔍 Raw correctAnswer:', correctAnswerIndex);
 
-        // If correctAnswer is a string, try to parse it
+        // Parse correct answer
         if (typeof correctAnswerIndex === 'string') {
-            // Try to parse as number first
             const parsedNumber = parseInt(correctAnswerIndex.trim());
             if (!isNaN(parsedNumber) && parsedNumber >= 0 && parsedNumber < options.length) {
                 correctAnswerIndex = parsedNumber;
-                console.log('🔍 Parsed correctAnswer as number:', correctAnswerIndex);
             } else {
-                // Try to find by text content
-                console.log('🔍 Searching for correct answer by text:', correctAnswerIndex);
+                // Safe string comparison
                 correctAnswerIndex = options.findIndex(opt => {
-                    try {
-                        if (!opt || !correctAnswerIndex) return false;
-                        const optStr = String(opt).toLowerCase().trim();
-                        const correctStr = String(correctAnswerIndex).toLowerCase().trim();
-                        return optStr === correctStr;
-                    } catch (error) {
-                        console.error('Error comparing strings:', error);
-                        return false;
-                    }
+                    if (!opt || !correctAnswerIndex) return false;
+                    const optStr = String(opt).toLowerCase().trim();
+                    const correctStr = String(correctAnswerIndex).toLowerCase().trim();
+                    return optStr === correctStr;
                 });
-                console.log('🔍 Found correctAnswer index:', correctAnswerIndex);
             }
         }
 
-        // Validate correctAnswerIndex
-        if (correctAnswerIndex === undefined ||
-            correctAnswerIndex === null ||
-            correctAnswerIndex === -1 ||
-            correctAnswerIndex >= options.length) {
-            console.error('Invalid correct answer index:', correctAnswerIndex, 'Options length:', options.length);
+        // Validate correct answer
+        if (correctAnswerIndex === undefined || correctAnswerIndex === null ||
+            correctAnswerIndex === -1 || correctAnswerIndex >= options.length) {
+            console.error('Invalid correct answer index:', correctAnswerIndex);
             feedback.innerHTML = `<div class="alert alert-warning">⚠️ Unable to verify answer. ${question.explanation || 'Please continue.'}</div>`;
-            feedback.classList.remove('hidden');
-            return;
-        }
-
-        // Validate selectedIndex
-        if (selectedIndex < 0 || selectedIndex >= options.length) {
-            console.error('Invalid selected index:', selectedIndex, 'Options length:', options.length);
-            feedback.innerHTML = `<div class="alert alert-warning">⚠️ Invalid selection. Please try again.</div>`;
             feedback.classList.remove('hidden');
             return;
         }
@@ -528,7 +477,7 @@ function checkAnswer(selectedIndex) {
 
         feedback.classList.remove('hidden');
 
-        // Show next/finish button
+        // Show navigation
         if (currentQuestionIndex < state.quiz.length - 1) {
             const nextBtn = document.getElementById('nextQuestionBtn');
             if (nextBtn) {
@@ -547,7 +496,7 @@ function checkAnswer(selectedIndex) {
         }
 
     } catch (error) {
-        console.error('❌ Critical error in checkAnswer:', error);
+        console.error('Error in checkAnswer:', error);
         const feedback = document.getElementById('feedbackArea');
         if (feedback) {
             feedback.innerHTML = `<div class="alert alert-warning">⚠️ An error occurred. Please continue to the next question.</div>`;
