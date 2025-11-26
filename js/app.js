@@ -347,11 +347,32 @@ function showQuestion(index) {
     progressText.textContent = `Question ${index + 1} of ${state.quiz.length}`;
     progressBar.style.width = `${((index + 1) / state.quiz.length) * 100}%`;
 
+    // Parse options if it's a JSON string
+    let options = question.options;
+    if (typeof options === 'string') {
+        try {
+            options = JSON.parse(options);
+        } catch (e) {
+            console.error('Failed to parse options:', e);
+            console.log('Raw options:', options);
+            options = [];
+        }
+    }
+
+    // Ensure options is an array
+    if (!Array.isArray(options)) {
+        console.error('Options is not an array:', options);
+        options = [];
+    }
+
+    console.log('Rendering question:', question.question);
+    console.log('Options:', options);
+
     container.innerHTML = `
         <div class="question-card fade-in">
             <h3>${question.question}</h3>
             <div class="options-grid">
-                ${question.options.map((opt, i) => `
+                ${options.map((opt, i) => `
                     <button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>
                 `).join('')}
             </div>
@@ -372,14 +393,44 @@ window.checkAnswer = function(selectedIndex) {
 
     buttons.forEach(btn => btn.disabled = true);
 
-    if (selectedIndex === question.correctAnswer) {
+    // Parse options if it's a JSON string
+    let options = question.options;
+    if (typeof options === 'string') {
+        try {
+            options = JSON.parse(options);
+        } catch (e) {
+            console.error('Failed to parse options in checkAnswer:', e);
+            options = [];
+        }
+    }
+
+    // Parse correctAnswer - it might be an index (number) or the answer text (string)
+    let correctAnswerIndex = question.correctAnswer;
+    if (typeof correctAnswerIndex === 'string') {
+        // If it's a numeric string, convert to number
+        if (correctAnswerIndex.trim().match(/^\d+$/)) {
+            correctAnswerIndex = parseInt(correctAnswerIndex);
+        } else {
+            // Find the index of the correct answer text
+            correctAnswerIndex = options.findIndex(opt =>
+                opt.toLowerCase().trim() === correctAnswerIndex.toLowerCase().trim()
+            );
+        }
+    }
+
+    console.log('Selected:', selectedIndex, 'Correct:', correctAnswerIndex);
+
+    if (selectedIndex === correctAnswerIndex) {
         quizScore++;
-        feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${question.explanation}</div>`;
+        feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${question.explanation || ''}</div>`;
         buttons[selectedIndex].classList.add('correct');
     } else {
-        feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${question.options[question.correctAnswer]}. ${question.explanation}</div>`;
+        const correctAnswerText = options[correctAnswerIndex] || 'Unknown';
+        feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${correctAnswerText}. ${question.explanation || ''}</div>`;
         buttons[selectedIndex].classList.add('wrong');
-        buttons[question.correctAnswer].classList.add('correct');
+        if (buttons[correctAnswerIndex]) {
+            buttons[correctAnswerIndex].classList.add('correct');
+        }
     }
 
     feedback.classList.remove('hidden');
