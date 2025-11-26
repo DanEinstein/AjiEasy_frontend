@@ -201,7 +201,7 @@ function loadDashboardHistory() {
     `).join('');
 }
 
-// --- QUESTIONS LOGIC (Gemini) ---
+// --- QUESTIONS LOGIC (Gemini) - FIXED ---
 const topicForm = document.getElementById('topicForm');
 if (topicForm) {
     topicForm.addEventListener('submit', async (e) => {
@@ -210,7 +210,13 @@ if (topicForm) {
         const data = Object.fromEntries(formData.entries());
 
         toggleLoading(true, 'Generating Questions with Gemini...');
-        document.getElementById('questionsResults').style.display = 'none';
+
+        // Clear previous results safely
+        const questionsResults = document.getElementById('questionsResults');
+        if (questionsResults) {
+            questionsResults.style.display = 'none';
+            questionsResults.innerHTML = '';
+        }
 
         try {
             const response = await apiFetch("/generate-questions/", {
@@ -226,45 +232,87 @@ if (topicForm) {
             if (!response.ok) throw new Error('Failed to generate questions');
 
             const questions = await response.json();
+            console.log("Received questions:", questions);
             displayQuestions(questions);
             saveToHistory(data);
 
         } catch (error) {
             console.error(error);
-            if (window.auth && window.auth.showError) window.auth.showError('Failed to generate questions.');
+            showToast('Failed to generate questions. Please try again.', 'error');
         } finally {
             toggleLoading(false);
         }
     });
 }
 
+// FIXED: Questions display with safe rendering
 function displayQuestions(questions) {
-    console.log("Received questions:", questions);
+    console.log("Displaying questions:", questions);
 
+    // Robustness: Handle wrapped response if backend sends { questions: [...] }
     if (!Array.isArray(questions) && questions.questions) {
         questions = questions.questions;
     }
 
     if (!Array.isArray(questions)) {
         console.error("Invalid questions format:", questions);
-        if (window.auth && window.auth.showError) window.auth.showError('Received invalid data format.');
+        showToast('Received invalid data format from server.', 'error');
         return;
     }
 
     const container = document.getElementById('questionsResults');
-    container.innerHTML = questions.map((q, i) => `
-        <div class="result-card fade-in" style="animation-delay: ${i * 0.1}s">
-            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:1rem;">
-                <span class="badge" style="background:rgba(22, 199, 154, 0.1); color:var(--primary-teal); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${q.type}</span>
-                <span class="badge" style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${q.difficulty}</span>
-            </div>
-            <h3 style="font-size:1.1rem; margin-bottom:0.5rem; line-height:1.5;">${q.question}</h3>
-            <p style="color:var(--text-secondary); font-size:0.9rem;">${q.explanation || ''}</p>
-        </div>
-    `).join('');
-    container.style.display = 'grid';
-    container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
-    container.style.gap = '1.5rem';
+    if (!container) {
+        console.error('Questions results container not found');
+        return;
+    }
+
+    try {
+        // Safe HTML generation with error handling
+        const questionsHTML = questions.map((q, i) => {
+            try {
+                // Safe property access with fallbacks
+                const type = q.type || 'General';
+                const difficulty = q.difficulty || 'Medium';
+                const questionText = q.question || 'No question text available';
+                const explanation = q.explanation || '';
+
+                return `
+                    <div class="result-card fade-in" style="animation-delay: ${i * 0.1}s">
+                        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:1rem;">
+                            <span class="badge" style="background:rgba(22, 199, 154, 0.1); color:var(--primary-teal); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${escapeHtml(type)}</span>
+                            <span class="badge" style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${escapeHtml(difficulty)}</span>
+                        </div>
+                        <h3 style="font-size:1.1rem; margin-bottom:0.5rem; line-height:1.5;">${escapeHtml(questionText)}</h3>
+                        <p style="color:var(--text-secondary); font-size:0.9rem;">${escapeHtml(explanation)}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error rendering question:', error, q);
+                return `<div class="result-card">Error displaying question</div>`;
+            }
+        }).join('');
+
+        container.innerHTML = questionsHTML;
+        container.style.display = 'grid';
+        container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+        container.style.gap = '1.5rem';
+
+    } catch (error) {
+        console.error('Error displaying questions:', error);
+        container.innerHTML = '<div class="result-card">Error displaying questions. Please try again.</div>';
+        container.style.display = 'block';
+    }
+}
+
+// Safe HTML escaping function
+function escapeHtml(unsafe) {
+    if (unsafe === undefined || unsafe === null) return '';
+    return String(unsafe)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function saveToHistory(data) {
@@ -278,7 +326,7 @@ function saveToHistory(data) {
     loadDashboardHistory();
 }
 
-// --- QUIZ LOGIC (Gemini) ---
+// --- QUIZ LOGIC (Gemini) - FIXED ---
 const quizForm = document.getElementById('quizForm');
 let currentQuestionIndex = 0;
 let quizScore = 0;
@@ -310,7 +358,7 @@ if (quizForm) {
 
         } catch (error) {
             console.error(error);
-            if (window.auth && window.auth.showError) window.auth.showError('Failed to generate quiz.');
+            showToast('Failed to generate quiz. Please try again.', 'error');
             document.getElementById('quizSetup').classList.remove('hidden');
         } finally {
             toggleLoading(false);
@@ -377,10 +425,10 @@ function showQuestion(index) {
     setTimeout(() => {
         container.innerHTML = `
             <div class="question-card fade-in">
-                <h3>${question.question}</h3>
+                <h3>${escapeHtml(question.question)}</h3>
                 <div class="options-grid">
                     ${options.map((opt, i) => `
-                        <button class="option-btn" data-option-index="${i}">${opt}</button>
+                        <button class="option-btn" data-option-index="${i}">${escapeHtml(opt)}</button>
                     `).join('')}
                 </div>
                 <div id="feedbackArea" class="mt-3 hidden"></div>
@@ -464,11 +512,11 @@ function checkAnswer(selectedIndex) {
         // Score the answer
         if (selectedIndex === correctAnswerIndex) {
             quizScore++;
-            feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${question.explanation || ''}</div>`;
+            feedback.innerHTML = `<div class="alert alert-success">✅ Correct! ${escapeHtml(question.explanation || '')}</div>`;
             buttons[selectedIndex].classList.add('correct');
         } else {
             const correctAnswerText = options[correctAnswerIndex] || 'Unknown';
-            feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${correctAnswerText}. ${question.explanation || ''}</div>`;
+            feedback.innerHTML = `<div class="alert alert-danger">❌ Incorrect. The correct answer was: ${escapeHtml(correctAnswerText)}. ${escapeHtml(question.explanation || '')}</div>`;
             buttons[selectedIndex].classList.add('wrong');
             if (buttons[correctAnswerIndex]) {
                 buttons[correctAnswerIndex].classList.add('correct');
@@ -568,7 +616,7 @@ function appendMessage(role, text, isLoading = false) {
 
     div.innerHTML = `
         <div class="message-avatar"><i class="fas ${role === 'user' ? 'fa-user' : 'fa-robot'}"></i></div>
-        <div class="message-content">${text}</div>
+        <div class="message-content">${escapeHtml(text)}</div>
     `;
 
     container.appendChild(div);
@@ -603,7 +651,7 @@ async function loadAnalytics() {
             chartContainer.innerHTML = Object.entries(data.topic_mastery).map(([topic, score]) => `
                 <div style="margin-bottom: 10px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;">
-                        <span>${topic}</span>
+                        <span>${escapeHtml(topic)}</span>
                         <span>${score}%</span>
                     </div>
                     <div style="background:#eee; height:8px; border-radius:4px; overflow:hidden;">
@@ -637,8 +685,8 @@ async function loadRecommendations() {
                     <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: ${rec.color || '#16c79a'}">
                         <i class="fas ${rec.icon || 'fa-star'}"></i>
                     </div>
-                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${rec.topic}</h4>
-                    <p style="font-size: 0.8rem; opacity: 0.8;">${rec.trend}</p>
+                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${escapeHtml(rec.topic)}</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.8;">${escapeHtml(rec.trend)}</p>
                 </div>
             `).join('');
         } else {
@@ -676,7 +724,7 @@ function showToast(message, type = 'success') {
     toast.className = `toast ${type}`;
     toast.innerHTML = `
         <span class="toast-icon">${type === 'success' ? '✓' : 'ℹ'}</span>
-        <span class="toast-message">${message}</span>
+        <span class="toast-message">${escapeHtml(message)}</span>
         <button class="toast-close" onclick="this.parentElement.remove()">×</button>
     `;
     container.appendChild(toast);
