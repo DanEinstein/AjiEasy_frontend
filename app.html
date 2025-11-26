@@ -46,6 +46,28 @@
         </div>
     </nav>
 
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="nav-section">
+                <h3>Main Menu</h3>
+                <div class="nav-links">
+                    <button class="nav-link active" data-view="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="nav-link" data-view="quiz">
+                        <i class="fas fa-puzzle-piece"></i> Practice Quiz
+                    </button>
+                    <button class="nav-link" data-view="chat">
+                        <i class="fas fa-comments"></i> AI Assistant
+                    </button>
+                    <button class="nav-link" data-view="questions">
+                        <i class="fas fa-question-circle"></i> Interview Prep
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-section">
                 <h3>Insights</h3>
                 <div class="nav-links">
                     <button class="nav-link" data-view="analytics">
@@ -58,7 +80,7 @@
         <!-- Main Content -->
         <main class="main-content" id="mainContent">
 
-            <!-- Dashboard View -->
+            <!--Dashboard View -->
             <div id="dashboardView" class="view-section active dashboard-view">
                 <div class="welcome-header fade-in">
                     <h1 id="welcomeMessage">Welcome back!</h1>
@@ -72,9 +94,43 @@
                     </h2>
                     <div class="rec-scroll" id="recommendationsList">
                         <div class="rec-card">
+                            <i class="fas fa-spinner fa-spin"></i> Loading trends...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid fade-in" style="animation-delay: 0.2s;">
+                    <div class="action-card" data-view="quiz">
+                        <div class="card-icon icon-teal">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <h3>Take a Quiz</h3>
+                        <p>Test your knowledge with interactive quizzes on various technical topics.</p>
+                    </div>
+
+                    <div class="action-card" data-view="chat">
+                        <div class="card-icon icon-purple">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Chat Coach</h3>
+                        <p>Have a conversation with our AI coach to practice your answers.</p>
+                    </div>
+
+                    <div class="action-card" data-view="questions">
+                        <div class="card-icon icon-blue">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h3>Generate Questions</h3>
+                        <p>Get personalized interview questions based on your target role and company.</p>
+                    </div>
+                </div>
+
+                <div class="recent-activity fade-in" style="animation-delay: 0.3s;">
+                    <div class="section-header">
+                        <h2>Recent Activity</h2>
                     </div>
                     <div class="activity-list" id="recentActivityList">
-                        <!-- Populated by JS -->
+                        <!--Populated by JS -->
                         <div class="activity-item">
                             <div class="activity-icon"><i class="fas fa-history"></i></div>
                             <div class="activity-details">
@@ -193,7 +249,7 @@
                             <div class="message-content">Hello! I'm your AI interview coach. I can help you practice answers, review your resume, or explain technical concepts. What would you like to do?</div>
                         </div>
                     </div>
-                    <form class="chat-input-area" id="chatForm">
+                   <form class="chat-input-area" id="chatForm">
                         <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
                         <button type="submit">
                             <i class="fas fa-paper-plane"></i>
@@ -218,7 +274,7 @@
                 </div>
 
                 <div class="analytics-dashboard" id="analyticsDashboard">
-                     <div class="stat-card">
+                    <div class="stat-card">
                         <div class="stat-icon icon-blue"><i class="fas fa-check-circle"></i></div>
                         <div class="stat-value" id="statQuestions">0</div>
                         <div class="stat-label">Questions</div>
