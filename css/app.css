@@ -847,6 +847,10 @@ body {
 }
 
 /* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
 .text-center {
     text-align: center;
 }
@@ -1097,61 +1101,103 @@ body {
 .options-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.2rem;
+    margin-top: 1rem;
 }
 
 @media (min-width: 768px) {
     .options-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
     }
 }
 
 .option-btn {
-    background: #f8f9fa;
+    background: white;
     border: 2px solid #e2e8f0;
-    padding: 1.2rem 1.5rem;
+    padding: 1.3rem 1.8rem;
     border-radius: var(--radius-lg);
     color: var(--text-dark);
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     font-size: 1rem;
     font-weight: 500;
     font-family: 'Poppins', sans-serif;
     width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.option-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--primary-teal);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
 }
 
 .option-btn:hover:not(:disabled) {
-    background: white;
+    background: #f8fffe;
     border-color: var(--primary-teal);
     color: var(--primary-teal);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(22, 199, 154, 0.15);
+}
+
+.option-btn:hover:not(:disabled)::before {
+    transform: scaleY(1);
+}
+
+.option-btn:active:not(:disabled) {
+    transform: translateX(2px);
 }
 
 .option-btn:disabled {
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 .option-btn.correct {
-    background: rgba(16, 185, 129, 0.1) !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08)) !important;
     border-color: #10b981 !important;
     color: #047857 !important;
     font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+}
+
+.option-btn.correct::before {
+    background: #10b981;
+    transform: scaleY(1);
 }
 
 .option-btn.wrong {
-    background: rgba(239, 68, 68, 0.1) !important;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08)) !important;
     border-color: #ef4444 !important;
     color: #b91c1c !important;
     font-weight: 600;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+}
+
+.option-btn.wrong::before {
+    background: #ef4444;
+    transform: scaleY(1);
 }
 
 .option-btn.selected {
-    background: rgba(22, 199, 154, 0.1);
+    background: linear-gradient(135deg, rgba(22, 199, 154, 0.12), rgba(22, 199, 154, 0.05));
     border-color: var(--primary-teal);
     color: var(--primary-teal);
+    font-weight: 600;
+}
+
+.option-btn.selected::before {
+    transform: scaleY(1);
 }
 
 /* Improved Modern Chat Interface */
