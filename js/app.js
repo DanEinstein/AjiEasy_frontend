@@ -575,7 +575,7 @@ function showToast(message, type = 'success') {
         <span class="toast-icon">${type === 'success' ? '✓' : 'ℹ'}</span>
         <span class="toast-message">${message}</span>
         <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-    }
-
-    feedback.classList.remove('hidden');
-
+    `;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
