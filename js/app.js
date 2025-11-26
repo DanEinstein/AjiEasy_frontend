@@ -416,6 +416,7 @@ function showQuestion(index) {
     if (finishBtn) finishBtn.classList.add('hidden');
 }
 
+// FIXED: checkAnswer function with proper null/undefined checks
 window.checkAnswer = function(selectedIndex) {
     const question = state.quiz[currentQuestionIndex];
     const feedback = document.getElementById('feedbackArea');
@@ -434,18 +435,29 @@ window.checkAnswer = function(selectedIndex) {
         }
     }
 
+    // Ensure options is an array with safe values
+    if (!Array.isArray(options)) {
+        console.error('Options is not an array:', options);
+        options = [];
+    }
+
+    // Clean options - replace undefined/null with empty strings
+    options = options.map(opt => opt || '');
+
     // Parse correctAnswer - it might be an index (number) or the answer text (string)
     let correctAnswerIndex = question.correctAnswer;
+
     if (typeof correctAnswerIndex === 'string' && correctAnswerIndex) {
         // If it's a numeric string, convert to number
         if (correctAnswerIndex.trim().match(/^\d+$/)) {
             correctAnswerIndex = parseInt(correctAnswerIndex);
         } else {
             // Find the index of the correct answer text (with safety checks)
-            correctAnswerIndex = options.findIndex(opt =>
-                opt && typeof opt === 'string' &&
-                opt.toLowerCase().trim() === correctAnswerIndex.toLowerCase().trim()
-            );
+            correctAnswerIndex = options.findIndex(opt => {
+                // Safe string comparison with null/undefined checks
+                if (!opt || !correctAnswerIndex) return false;
+                return opt.toString().toLowerCase().trim() === correctAnswerIndex.toString().toLowerCase().trim();
+            });
         }
     }
 
