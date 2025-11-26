@@ -1075,6 +1075,85 @@ body {
     margin-top: 1rem;
 }
 
+/* Quiz Question Cards and Options */
+.question-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.4s ease;
+}
+
+.question-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-blue);
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.option-btn {
+    background: #f8f9fa;
+    border: 2px solid #e2e8f0;
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--radius-lg);
+    color: var(--text-dark);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+}
+
+.option-btn:hover:not(:disabled) {
+    background: white;
+    border-color: var(--primary-teal);
+    color: var(--primary-teal);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.option-btn.correct {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: #10b981 !important;
+    color: #047857 !important;
+    font-weight: 600;
+}
+
+.option-btn.wrong {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: #ef4444 !important;
+    color: #b91c1c !important;
+    font-weight: 600;
+}
+
+.option-btn.selected {
+    background: rgba(22, 199, 154, 0.1);
+    border-color: var(--primary-teal);
+    color: var(--primary-teal);
+}
+
 /* Improved Modern Chat Interface */
 .chat-container {
     display: flex;
