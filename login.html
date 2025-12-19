@@ -237,6 +237,23 @@
             rememberMeCheckbox.checked = true;
         }
 
+        // Check backend connectivity
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${window.CONFIG.API_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    showToast('⚠️ Backend service may be experiencing issues', 'warning');
+                }
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+                showToast('⚠️ Unable to connect to server. Please check your connection.', 'warning');
+            }
+        }
+
         // Handle form submission
         loginForm.addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -276,16 +293,18 @@
                         localStorage.removeItem('rememberedEmail');
                     }
 
-                    // ✅ CRITICAL FIX: Save user data that app.html expects
-                    const userData = {
+                    // ✅ CRITICAL FIX: Use actual user data from response if available
+                    const userData = response.user || {
                         email: email,
-                        name: email.split('@')[0] // Create a basic name from email
+                        name: email.split('@')[0]
                     };
 
                     // Save user data in ALL the formats that app.html checks
                     localStorage.setItem('user', JSON.stringify(userData));
-                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userEmail', userData.email);
                     localStorage.setItem('userName', userData.name);
+                    localStorage.setItem(window.CONFIG.TOKEN_KEY, response.access_token);
+                    localStorage.setItem('accessToken', response.access_token);
 
                     console.log('✅ User data saved for app.html:', userData);
 
@@ -352,6 +371,8 @@
             if (!emailInput.value) {
                 emailInput.focus();
             }
+            // Run health check
+            checkBackendHealth();
         });
     </script>
 </body>

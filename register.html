@@ -188,6 +188,9 @@
                     <label for="password">
                         <i class="fas fa-lock"></i>
                         Password
+                        <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400; margin-left: 0.5rem;">
+                            (Minimum 6 characters)
+                        </span>
                     </label>
                     <input type="password" id="password" name="password" placeholder="Create a strong password" required
                         autocomplete="new-password">
@@ -326,6 +329,23 @@
             strengthText.textContent = result.feedback;
         });
 
+        // Check backend connectivity
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${window.CONFIG.API_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    showToast('⚠️ Backend service may be experiencing issues', 'warning');
+                }
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+                showToast('⚠️ Unable to connect to server. Please check your connection.', 'warning');
+            }
+        }
+
         // Handle form submission
         registerForm.addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -461,6 +481,9 @@
                 });
             });
         });
+
+        // Run health check on load
+        window.addEventListener('load', checkBackendHealth);
     </script>
 </body>
 

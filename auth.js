@@ -83,7 +83,7 @@ async function loginUser(email, password) {
  */
 async function registerUser(name, email, password) {
     try {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`${API_URL}/register/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -164,7 +164,7 @@ async function authenticatedRequest(endpoint, options = {}) {
         ...options,
         headers: {
             ...defaultOptions.headers,
-            ...options.headers
+            ...(options.headers || {})
         }
     };
 
@@ -201,3 +201,4 @@ window.auth = {
     authenticatedRequest,
     showError
 };
+

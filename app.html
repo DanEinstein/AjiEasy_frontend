@@ -9,13 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/app.css">
-    <script>
-        window.CONFIG = {
-            API_URL: "https://ajieasy-backend.onrender.com",
-            TOKEN_KEY: "aji_token",
-            USER_KEY: "aji_user"
-        };
-    </script>
 </head>
 <body>
     <!-- Toast Container -->
@@ -62,14 +55,14 @@
                     <button class="nav-link active" data-view="dashboard">
                         <i class="fas fa-home"></i> Dashboard
                     </button>
-                    <button class="nav-link" data-view="questions">
-                        <i class="fas fa-question-circle"></i> Interview Prep
-                    </button>
                     <button class="nav-link" data-view="quiz">
                         <i class="fas fa-puzzle-piece"></i> Practice Quiz
                     </button>
                     <button class="nav-link" data-view="chat">
                         <i class="fas fa-comments"></i> AI Assistant
+                    </button>
+                    <button class="nav-link" data-view="questions">
+                        <i class="fas fa-question-circle"></i> Interview Prep
                     </button>
                 </div>
             </div>
@@ -87,7 +80,7 @@
         <!-- Main Content -->
         <main class="main-content" id="mainContent">
 
-            <!-- Dashboard View -->
+            <!--Dashboard View -->
             <div id="dashboardView" class="view-section active dashboard-view">
                 <div class="welcome-header fade-in">
                     <h1 id="welcomeMessage">Welcome back!</h1>
@@ -107,14 +100,6 @@
                 </div>
 
                 <div class="dashboard-grid fade-in" style="animation-delay: 0.2s;">
-                    <div class="action-card" data-view="questions">
-                        <div class="card-icon icon-blue">
-                            <i class="fas fa-magic"></i>
-                        </div>
-                        <h3>Generate Questions</h3>
-                        <p>Get personalized interview questions based on your target role and company.</p>
-                    </div>
-
                     <div class="action-card" data-view="quiz">
                         <div class="card-icon icon-teal">
                             <i class="fas fa-check-double"></i>
@@ -130,6 +115,14 @@
                         <h3>AI Chat Coach</h3>
                         <p>Have a conversation with our AI coach to practice your answers.</p>
                     </div>
+
+                    <div class="action-card" data-view="questions">
+                        <div class="card-icon icon-blue">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h3>Generate Questions</h3>
+                        <p>Get personalized interview questions based on your target role and company.</p>
+                    </div>
                 </div>
 
                 <div class="recent-activity fade-in" style="animation-delay: 0.3s;">
@@ -137,7 +130,7 @@
                         <h2>Recent Activity</h2>
                     </div>
                     <div class="activity-list" id="recentActivityList">
-                        <!-- Populated by JS -->
+                        <!--Populated by JS -->
                         <div class="activity-item">
                             <div class="activity-icon"><i class="fas fa-history"></i></div>
                             <div class="activity-details">
@@ -221,53 +214,46 @@
                     </form>
                 </div>
 
-                <div id="quizInterface" class="hidden fade-in">
-                    <div class="quiz-progress">
-                        <span id="quizProgressText">Question 1 of 10</span>
-                        <div class="progress-bar"><div class="progress-fill" id="quizProgressBar" style="width: 10%"></div></div>
+                <div id="quizInterface" class="hidden">
+                    <div class="quiz-progress-container">
+                        <div class="quiz-progress-bar" id="quizProgressBar"></div>
                     </div>
+                    <div class="text-right mb-2" id="quizProgressText" style="color: var(--text-secondary); font-size: 0.9rem;">Question 1 of 10</div>
 
-                    <div id="quizQuestionContainer">
-                        <!-- Questions injected here -->
-                    </div>
+                    <div id="quizQuestionContainer"></div>
 
-                    <div class="quiz-controls">
-                        <button id="nextQuestionBtn" class="btn-secondary hidden">Next Question</button>
-                        <button id="finishQuizBtn" class="btn-primary hidden">Finish Quiz</button>
+                    <div class="quiz-actions mt-4">
+                        <button id="nextQuestionBtn" class="btn-primary hidden">Next Question <i class="fas fa-arrow-right"></i></button>
+                        <button id="finishQuizBtn" class="btn-success hidden">Finish Quiz <i class="fas fa-flag-checkered"></i></button>
                     </div>
                 </div>
 
-                <div id="quizResults" class="hidden fade-in">
-                    <div class="score-card">
-                        <h3>Quiz Complete!</h3>
-                        <div class="score-display">
-                            <span id="finalScore">0</span>%
-                        </div>
-                        <p id="scoreMessage">Great job!</p>
-                        <button class="btn-primary" onclick="location.reload()">Take Another Quiz</button>
+                <div id="quizResults" class="hidden text-center fade-in">
+                    <div class="result-icon">🏆</div>
+                    <h2>Quiz Completed!</h2>
+                    <div class="score-display">
+                        <span class="score-value" id="finalScore">0</span>
+                        <span class="score-label">% Score</span>
                     </div>
+                    <p id="scoreMessage" class="result-message">Great job!</p>
+                    <button class="btn-primary mt-4" onclick="location.reload()">Take Another Quiz</button>
                 </div>
             </div>
 
             <!-- Chat View -->
             <div id="chatView" class="view-section">
-                <div class="section-header">
-                    <h2>AI Chat Coach</h2>
-                </div>
-
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages">
                         <div class="message ai-message">
                             <div class="message-avatar"><i class="fas fa-robot"></i></div>
                             <div class="message-content">
-                                Hello! I'm AjiEasy your AI Interview Coach. I can help you practice answers, review your resume, or discuss technical topics. What would you like to work on?
+                                Hello! I'm your AI Interview Coach. I can help you practice answers, review your resume, or discuss technical topics. What would you like to work on?
                             </div>
                         </div>
                     </div>
-
-                    <form class="chat-input-area" id="chatForm">
-                        <input type="text" id="chatInput" placeholder="Type your message..." required autocomplete="off">
-                        <button type="submit" class="btn-send">
+                   <form class="chat-input-area" id="chatForm">
+                        <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+                        <button type="submit">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </form>
@@ -276,21 +262,29 @@
 
             <!-- Analytics View -->
             <div id="analyticsView" class="view-section">
-                <div class="section-header">
-                    <h2>Performance Analytics</h2>
-                    <button class="btn-secondary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <div class="results-header">
+                    <div class="results-header-left">
+                        <h3>Performance Analytics</h3>
+                        <span class="topic-badge" id="analyticsPeriodBadge">Last 30 Days</span>
+                    </div>
+                    <div class="results-actions">
+                        <button class="btn-action" id="refreshAnalytics">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
                 </div>
 
-                <div class="analytics-grid">
+                <div class="analytics-dashboard" id="analyticsDashboard">
                     <div class="stat-card">
                         <div class="stat-icon icon-blue"><i class="fas fa-check-circle"></i></div>
                         <div class="stat-value" id="statQuestions">0</div>
-                        <div class="stat-label">Questions Generated</div>
+                        <div class="stat-label">Questions</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon icon-teal"><i class="fas fa-star"></i></div>
                         <div class="stat-value" id="statQuizScore">0%</div>
-                        <div class="stat-label">Avg Quiz Score</div>
+                        <div class="stat-label">Avg Score</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon icon-purple"><i class="fas fa-fire"></i></div>
@@ -303,7 +297,6 @@
                     <div class="chart-container">
                         <h3>Topic Mastery</h3>
                         <div id="topicMasteryChart" class="chart-placeholder">
-                            <!-- Simple CSS Bar Chart injected here -->
                             <p class="text-muted">Complete quizzes to see data</p>
                         </div>
                     </div>
@@ -316,6 +309,7 @@
     <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
